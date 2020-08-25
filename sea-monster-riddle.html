@@ -2,16 +2,25 @@
 <script>
 
 $(document).ready(function(){
-  $("#run-button").click(() =>
-    runSolution($("body"))
-  );
+  $("#run-button").click(() => {
+	const solutionLog = $("#solution-log");
+	
+	solutionLog.text('');
+    runSolution(solutionLog);
+  });
 });
 
-const runSolution = (html) => {
-
-	const t0 = performance.now()
-
-	const getChestPearlCount=(hundredThousandSymbol, tenThousandSymbol, thousandSymbol, hundredSymbol, tenSymbol, oneSymbol)=>
+const initializeSolutionsCounterObject = () => {
+	return {
+		1:0,
+		2:0,
+		3:0,
+		4:0,
+		5:0
+	};
+}
+	
+const getChestPearlCount=(hundredThousandSymbol, tenThousandSymbol, thousandSymbol, hundredSymbol, tenSymbol, oneSymbol)=>
 		100000 * hundredThousandSymbol +
 		10000 * tenThousandSymbol +
 		1000 * thousandSymbol +
@@ -19,21 +28,54 @@ const runSolution = (html) => {
 		10 * tenSymbol +
 		oneSymbol;
 
+const getChest1PearlCount=({trident, n})=>
+	getChestPearlCount(trident, n, trident, n, trident, n);
 
-	const getChest1PearlCount=({trident, n})=>
-		getChestPearlCount(trident, n, trident, n, trident, n);
+const getChest2PearlCount=({trident, bowAndArrow, epsilon})=>
+	getChestPearlCount(trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident);
 
-	const getChest2PearlCount=({trident, bowAndArrow, epsilon})=>
-		getChestPearlCount(trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident);
+const getChest3PearlCount=({stickMan, Z, bowAndArrow})=>
+	getChestPearlCount(stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow);
 
-	const getChest3PearlCount=({stickMan, Z, bowAndArrow})=>
-		getChestPearlCount(stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow);
+const getChest4PearlCount=({bowAndArrow, stitches, stickMan}) =>
+	getChestPearlCount(bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan);
 
-	const getChest4PearlCount=({bowAndArrow, stitches, stickMan}) =>
-		getChestPearlCount(bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan);
+const getChest5PearlCount=({house, trident, bowAndArrow})=>
+	getChestPearlCount(house, trident, bowAndArrow, trident, bowAndArrow, house);
 
-	const getChest5PearlCount=({house, trident, bowAndArrow})=>
-		getChestPearlCount(house, trident, bowAndArrow, trident, bowAndArrow, house);
+const getSolutionText = (chestNumber, solutionCount, possibleSolutionsCount) =>
+	`Chest ${chestNumber} contains ${solutionCount} solutions among ${possibleSolutionsCount} possible number combinations`;
+	
+const isValidSolution = (pearlCount) =>
+		((pearlCount/7) / 11) % 13 === 0;
+		
+const checkSolution = (chestNumber, chestPearlCount, symbols, possibleSolutionsArray, foundSolutionsArray, html) => {
+
+	possibleSolutionsArray[chestNumber]++;
+	
+	if (isValidSolution(chestPearlCount)) {
+		foundSolutionsArray[chestNumber]++;
+				
+		html.append(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
+	}
+}
+
+const getSolutionMessage = (chestNumber, chestPearlCount, symbols) =>{
+
+	const keys = Object.keys(symbols)
+	
+	let msg = `Chest ${chestNumber} has a solution of ${chestPearlCount}. `
+	
+	for (key of keys){
+		msg += `${key}=${symbols[key]}, `;
+	}
+	
+	return msg;
+}
+
+const runSolution = (html) => {
+
+	const t0 = performance.now()
 
 	/*
 	let trident = 1;
@@ -46,46 +88,9 @@ const runSolution = (html) => {
 	let house = 1;
 	*/
 
-	const initializeSolutionsCounterObject = () => {
-		return {
-			1:0,
-			2:0,
-			3:0,
-			4:0,
-			5:0
-		};
-	}
-
 	const foundSolutionsCount = initializeSolutionsCounterObject();
 
 	const possibleSolutionsCount = initializeSolutionsCounterObject();
-
-	const isValidSolution = (pearlCount) =>
-		((pearlCount/7) / 11) % 13 === 0;
-
-	const getSolutionMessage = (chestNumber, chestPearlCount, symbols) =>{
-
-		const keys = Object.keys(symbols)
-		
-		let msg = `Chest ${chestNumber} has a solution of ${chestPearlCount}. `
-		
-		for (key of keys){
-			msg += `${key}=${symbols[key]}, `;
-		}
-		
-		return msg;
-	}
-
-	const checkSolution = (chestNumber, chestPearlCount, symbols, possibleSolutionsArray, foundSolutionsArray, document) => {
-
-		possibleSolutionsArray[chestNumber]++;
-		
-		if (isValidSolution(chestPearlCount)) {
-			foundSolutionsArray[chestNumber]++;
-					
-			html.append(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
-		}
-	}
 
 	//Chest 1 (trident, n, trident, n, trident, n)
 	for (let trident = 1; trident<=9 ; trident++){
@@ -95,7 +100,7 @@ const runSolution = (html) => {
 			}
 
 			const symbols = {trident, n};
-			checkSolution(1, getChest1PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, document);
+			checkSolution(1, getChest1PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 		}
 	}
 
@@ -108,7 +113,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {trident, bowAndArrow, epsilon};
-				checkSolution(2, getChest2PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, document);
+				checkSolution(2, getChest2PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 			}
 		}
 	}
@@ -123,7 +128,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {stickMan, Z, bowAndArrow};
-				checkSolution(3, getChest3PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, document);
+				checkSolution(3, getChest3PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 			}
 		}
 	}
@@ -138,7 +143,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {bowAndArrow, stitches, stickMan};
-				checkSolution(4, getChest4PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, document);
+				checkSolution(4, getChest4PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 			}
 		}
 	}
@@ -153,30 +158,27 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {house, trident, bowAndArrow};
-				checkSolution(5, getChest5PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, document);
+				checkSolution(5, getChest5PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 			}
 		}
 	}
 
 	const t1 = performance.now();
 
-	const getSolutionText = (chestNumber, solutionCount, possibleSolutionsCount) =>
-		`Chest ${chestNumber} contains ${solutionCount} solutions among ${possibleSolutionsCount} possible number combinations`;
-
 	for (let chestNumber = 1; chestNumber<=5; chestNumber++){
 		html.append(`${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}<br>`);
 	}
 
 	html.append(`The program took ${t1 - t0} milliseconds to run`);
-	//The program took 35.415000005741604 milliseconds to run
 }
 
 </script>
 
 <body>
 
-<h1>Sea monster riddle</h1>
+<h1>Sea Monster Riddle</h1>
 <button id="run-button">Run program</button>
-<body></body>
+<br>
+<p id="solution-log"></p>
 
 </body>
