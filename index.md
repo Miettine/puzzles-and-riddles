@@ -1,4 +1,4 @@
 # puzzles-and-riddles
-A repository for solving code puzzles, challenges and riddles. Repository is work in progress, but the first riddle is viewable.
+A repository for solving code puzzles, challenges and riddles
 
-## [Sea Monster Riddle](../master/sea-monster-riddle.html)
+## [Sea Monster Riddle](../sea-monster-riddle.html)
