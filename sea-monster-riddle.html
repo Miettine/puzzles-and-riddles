@@ -28,18 +28,23 @@ const getChestPearlCount=(hundredThousandSymbol, tenThousandSymbol, thousandSymb
 		10 * tenSymbol +
 		oneSymbol;
 
+//Chest 1 (trident, n, trident, n, trident, n)
 const getChest1PearlCount=({trident, n})=>
 	getChestPearlCount(trident, n, trident, n, trident, n);
 
-const getChest2PearlCount=({trident, bowAndArrow, epsilon})=>
-	getChestPearlCount(trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident);
-
-const getChest3PearlCount=({stickMan, Z, bowAndArrow})=>
-	getChestPearlCount(stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow);
-
-const getChest4PearlCount=({bowAndArrow, stitches, stickMan}) =>
+//Chest 2 (bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan)
+const getChest2PearlCount=({bowAndArrow, stitches, stickMan})=>
 	getChestPearlCount(bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan);
 
+//Chest 3 (trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident)
+const getChest3PearlCount=({trident, bowAndArrow, epsilon})=>
+	getChestPearlCount(trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident);
+
+//Chest 4 (stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow)
+const getChest4PearlCount=({stickMan, Z, bowAndArrow}) =>
+	getChestPearlCount(stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow);
+
+//Chest 5 (house, trident, bowAndArrow, trident, bowAndArrow, house)
 const getChest5PearlCount=({house, trident, bowAndArrow})=>
 	getChestPearlCount(house, trident, bowAndArrow, trident, bowAndArrow, house);
 
@@ -103,37 +108,8 @@ const runSolution = (html) => {
 			checkSolution(1, getChest1PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 		}
 	}
-
-	//Chest 2 (trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident)
-	for (let trident = 1; trident<=9 ; trident++){
-		for (let bowAndArrow = 1;bowAndArrow<=9;bowAndArrow++){
-			for (let epsilon = 0;epsilon<=9;epsilon++){
-				if (trident == bowAndArrow || trident == epsilon ||epsilon == bowAndArrow){
-					continue;
-				}
-
-				const symbols = {trident, bowAndArrow, epsilon};
-				checkSolution(2, getChest2PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
-			}
-		}
-	}
-
-	//Chest 3 (stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow)
-	for (let stickMan = 1; stickMan<=9 ; stickMan++){
-		for (let Z = 0;Z<=9;Z++){
-			for (let bowAndArrow = 1;bowAndArrow<=9;bowAndArrow++){
-
-				if (stickMan == Z || stickMan == bowAndArrow || Z == bowAndArrow){
-					continue;
-				}
-
-				const symbols = {stickMan, Z, bowAndArrow};
-				checkSolution(3, getChest3PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
-			}
-		}
-	}
-
-	//Chest 4 (bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan)
+	
+	//Chest 2 (bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan)
 	for (let bowAndArrow = 1; bowAndArrow<=9 ; bowAndArrow++){
 		for (let stitches = 0;stitches<=9;stitches++){
 			for (let stickMan = 1;stickMan<=9;stickMan++){
@@ -143,6 +119,35 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {bowAndArrow, stitches, stickMan};
+				checkSolution(2, getChest2PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+			}
+		}
+	}
+
+	//Chest 3 (trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident)
+	for (let trident = 1; trident<=9 ; trident++){
+		for (let bowAndArrow = 1;bowAndArrow<=9;bowAndArrow++){
+			for (let epsilon = 0;epsilon<=9;epsilon++){
+				if (trident == bowAndArrow || trident == epsilon ||epsilon == bowAndArrow){
+					continue;
+				}
+
+				const symbols = {trident, bowAndArrow, epsilon};
+				checkSolution(3, getChest3PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+			}
+		}
+	}
+
+	//Chest 4 (stickMan, stickMan, Z, Z, bowAndArrow, bowAndArrow)
+	for (let stickMan = 1; stickMan<=9 ; stickMan++){
+		for (let Z = 0;Z<=9;Z++){
+			for (let bowAndArrow = 1;bowAndArrow<=9;bowAndArrow++){
+
+				if (stickMan == Z || stickMan == bowAndArrow || Z == bowAndArrow){
+					continue;
+				}
+
+				const symbols = {stickMan, Z, bowAndArrow};
 				checkSolution(4, getChest4PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
 			}
 		}
@@ -193,11 +198,11 @@ const runSolution = (html) => {
 <br>
 <h3>Solution</h3>
 <p>I have nominated the symbols with imaginative names</p>
-Chest 1: trident, n, trident, n, trident, n
-Chest 2: bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan
-Chest 3: trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident
-Chest 4: stickMan, stickMan, Z, Z, epsilon, epsilon
-Chest 5: house, trident, bowAndArrow, trident, bowAndArrow, house
+<p>Chest 1: trident, n, trident, n, trident, n</p>
+<p>Chest 2: bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan</p>
+<p>Chest 3: trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident</p>
+<p>Chest 4: stickMan, stickMan, Z, Z, epsilon, epsilon</p>
+<p>Chest 5: house, trident, bowAndArrow, trident, bowAndArrow, house</p>
 <button id="run-button">Solve riddle</button>
 <br>
 <p id="solution-log"></p>
