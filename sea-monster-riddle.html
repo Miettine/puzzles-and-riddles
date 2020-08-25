@@ -3,11 +3,11 @@
 
 $(document).ready(function(){
   $("#run-button").click(() =>
-    runSolution()
+    runSolution($("body"))
   );
 });
 
-const runSolution = () => {
+const runSolution = (html) => {
 
 	const t0 = performance.now()
 
@@ -83,7 +83,7 @@ const runSolution = () => {
 		if (isValidSolution(chestPearlCount)) {
 			foundSolutionsArray[chestNumber]++;
 					
-			document.write(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
+			html.append(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
 		}
 	}
 
@@ -164,10 +164,10 @@ const runSolution = () => {
 		`Chest ${chestNumber} contains ${solutionCount} solutions among ${possibleSolutionsCount} possible number combinations`;
 
 	for (let chestNumber = 1; chestNumber<=5; chestNumber++){
-		document.write(`${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}<br>`);
+		html.append(`${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}<br>`);
 	}
 
-	document.write(`The program took ${t1 - t0} milliseconds to run`);
+	html.append(`The program took ${t1 - t0} milliseconds to run`);
 	//The program took 35.415000005741604 milliseconds to run
 }
 
@@ -175,7 +175,8 @@ const runSolution = () => {
 
 <body>
 
-<p>Sea monster riddle</p>
+<h1>Sea monster riddle</h1>
 <button id="run-button">Run program</button>
+<body></body>
 
 </body>
