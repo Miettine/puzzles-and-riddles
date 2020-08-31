@@ -3,9 +3,11 @@
 
 $(document).ready(function(){
   $("#run-button").click(() => {
-	const solutionLog = $("#solution-log");
+	const solutionLog = $('#solution-log');
 	
 	solutionLog.text('');
+	$('#note-text').text('Scroll all the way down to view the whole solution.');
+	
     runSolution(solutionLog);
   });
 });
@@ -54,14 +56,14 @@ const getSolutionText = (chestNumber, solutionCount, possibleSolutionsCount) =>
 const isValidSolution = (pearlCount) =>
 		((pearlCount/7) / 11) % 13 === 0;
 		
-const checkSolution = (chestNumber, chestPearlCount, symbols, possibleSolutionsArray, foundSolutionsArray, html) => {
+const checkSolution = (chestNumber, chestPearlCount, symbols, possibleSolutionsArray, foundSolutionsArray, htmlElement) => {
 
 	possibleSolutionsArray[chestNumber]++;
 	
 	if (isValidSolution(chestPearlCount)) {
 		foundSolutionsArray[chestNumber]++;
 				
-		html.append(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
+		htmlElement.append(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
 	}
 }
 
@@ -78,7 +80,7 @@ const getSolutionMessage = (chestNumber, chestPearlCount, symbols) =>{
 	return msg;
 }
 
-const runSolution = (html) => {
+const runSolution = (solutionTextHtmlElement) => {
 
 	const t0 = performance.now()
 
@@ -105,7 +107,7 @@ const runSolution = (html) => {
 			}
 
 			const symbols = {trident, n};
-			checkSolution(1, getChest1PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+			checkSolution(1, getChest1PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, solutionTextHtmlElement);
 		}
 	}
 	
@@ -119,7 +121,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {bowAndArrow, stitches, stickMan};
-				checkSolution(2, getChest2PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+				checkSolution(2, getChest2PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, solutionTextHtmlElement);
 			}
 		}
 	}
@@ -133,7 +135,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {trident, bowAndArrow, epsilon};
-				checkSolution(3, getChest3PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+				checkSolution(3, getChest3PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, solutionTextHtmlElement);
 			}
 		}
 	}
@@ -148,7 +150,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {stickMan, Z, bowAndArrow};
-				checkSolution(4, getChest4PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+				checkSolution(4, getChest4PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, solutionTextHtmlElement);
 			}
 		}
 	}
@@ -163,7 +165,7 @@ const runSolution = (html) => {
 				}
 
 				const symbols = {house, trident, bowAndArrow};
-				checkSolution(5, getChest5PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, html);
+				checkSolution(5, getChest5PearlCount(symbols), symbols, possibleSolutionsCount, foundSolutionsCount, solutionTextHtmlElement);
 			}
 		}
 	}
@@ -171,10 +173,10 @@ const runSolution = (html) => {
 	const t1 = performance.now();
 
 	for (let chestNumber = 1; chestNumber<=5; chestNumber++){
-		html.append(`${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}<br>`);
+		solutionTextHtmlElement.append(`${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}<br>`);
 	}
 
-	html.append(`The program took ${t1 - t0} milliseconds to run`);
+	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run`);
 }
 
 </script>
@@ -196,14 +198,23 @@ const runSolution = (html) => {
 <p>3. Each of those divisions must leave no remainders.</p>
 <p>4. The ancient numerical system was base 10</p>
 <br>
-<h3>Solution</h3>
+<h2>Solution</h2>
 <p>I have nominated the symbols with imaginative names</p>
 <p>Chest 1: trident, n, trident, n, trident, n</p>
 <p>Chest 2: bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan</p>
 <p>Chest 3: trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident</p>
 <p>Chest 4: stickMan, stickMan, Z, Z, epsilon, epsilon</p>
 <p>Chest 5: house, trident, bowAndArrow, trident, bowAndArrow, house</p>
+<h2>Deductions</h2>
+<p>Here are things I deduced to help me reach the solution</p>
+<p>- The number of pearls in each chest can be any number from 101 101 to </p>
+<p>- Two symbols cannot be the same number. For example, chest 1 cannot have the number 111 111, because the ancients wouldn't have used two different symbols to nominate the same number.</p>
+<p>- The symbols n, epsilon, Z and stitches can mean any number from 0 to 9, but the symbols trident, bowAndArrow, stickMan and house can only be a number from 1 to 9. Some treasure chests start with a particular symbol, so it wouldn't make sense that the ancients would have used a symbol that stands for the number zero as the first digit of a six-figure number. (Example: Chest 3 showing a count of 012 210 or 'zero hundred twelve thousand two hundred ten' wouldn't make sense.) </p>
+<p>Press the button below to run the code that solves the riddle.</p>
 <button id="run-button">Solve riddle</button>
+
+<br>
+<p id="note-text"></p>
 <br>
 <p id="solution-log"></p>
 
