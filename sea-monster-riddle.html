@@ -3,15 +3,22 @@
 
 $(document).ready(function(){
   $("#run-button").click(() => {
-	const solutionLog = $('#solution-log');
+	const solutionLogElement = $('#solution-log');
 	
-	solutionLog.text('');
+	//need to clear the text in case the user clicks 
+	solutionLogElement.text('');
+	$('#analysis').text('');
+	
 	$('#note-text').text('Scroll all the way down to view the whole solution.');
 	
-    runSolution(solutionLog);
+    runSolution(solutionLogElement);
+	
+	$('#analysis').text('We can see from the result that chest 2 has as many solutions in it as it has possible combinations of symbol meanings. Therefore, chest 2 has a suitable number of pearls in it, regardless of what its numbers mean.</br></br>It took me about 5 hours of work to reach the solution with this program. The sea monsters grew restless but promptly left once receiving the ransom of pearls. Long live Atlantarctica.');
+	
   });
 });
 
+/*Created this function because a similar object needs to be used for two different variables*/
 const initializeSolutionsCounterObject = () => {
 	return {
 		1:0,
@@ -55,7 +62,8 @@ const getSolutionText = (chestNumber, solutionCount, possibleSolutionsCount) =>
 	
 const isValidSolution = (pearlCount) =>
 		((pearlCount/7) / 11) % 13 === 0;
-		
+
+/*This function probably does a few too many things. It would have been preferable to break it into smaller parts that do more specific tasks. However, I decided it was important to avoid repeated code at all costs.*/		
 const checkSolution = (chestNumber, chestPearlCount, symbols, possibleSolutionsArray, foundSolutionsArray, htmlElement) => {
 
 	possibleSolutionsArray[chestNumber]++;
@@ -82,18 +90,9 @@ const getSolutionMessage = (chestNumber, chestPearlCount, symbols) =>{
 
 const runSolution = (solutionTextHtmlElement) => {
 
+	solutionTextHtmlElement.append('Starting program..');
 	const t0 = performance.now()
 
-	/*
-	let trident = 1;
-	let n = 0;
-	let bowAndArrow = 1;
-	let epsilon = 0;
-	let stickMan = 1;
-	let Z = 0;
-	let stitches = 0;
-	let house = 1;
-	*/
 
 	const foundSolutionsCount = initializeSolutionsCounterObject();
 
@@ -177,6 +176,7 @@ const runSolution = (solutionTextHtmlElement) => {
 	}
 
 	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run`);
+	solutionTextHtmlElement.append('Program finished.');
 }
 
 </script>
@@ -206,16 +206,19 @@ const runSolution = (solutionTextHtmlElement) => {
 <p>Chest 4: stickMan, stickMan, Z, Z, epsilon, epsilon</p>
 <p>Chest 5: house, trident, bowAndArrow, trident, bowAndArrow, house</p>
 <h2>Deductions</h2>
-<p>Here are things I deduced to help me reach the solution</p>
-<p>- The number of pearls in each chest can be any number from 101 101 to </p>
-<p>- Two symbols cannot be the same number. For example, chest 1 cannot have the number 111 111, because the ancients wouldn't have used two different symbols to nominate the same number.</p>
-<p>- The symbols n, epsilon, Z and stitches can mean any number from 0 to 9, but the symbols trident, bowAndArrow, stickMan and house can only be a number from 1 to 9. Some treasure chests start with a particular symbol, so it wouldn't make sense that the ancients would have used a symbol that stands for the number zero as the first digit of a six-figure number. (Example: Chest 3 showing a count of 012 210 or 'zero hundred twelve thousand two hundred ten' wouldn't make sense.) </p>
-<p>Press the button below to run the code that solves the riddle.</p>
+<p>Here are deductions that helped me reach the solution</p>
+<li>I wish to prove that only one chest will always have the correct number of pearls in it, no matter what its symbols mean. I can do this by writing a program that iterates through every possible combination of symbol meanings, then check if each of those numbers is divisible by the numbers 7, 11 and 13</li>
+<li>Two symbols cannot be the same number. For example, chest 1 cannot have the number 111 111, because the ancients wouldn't have used two different symbols to nominate the same number.</li>
+<li>The symbols n, epsilon, Z and stitches can mean any number from 0 to 9, but the symbols trident, bowAndArrow, stickMan and house can only be a number from 1 to 9. Some treasure chests start with a particular symbol, so it wouldn't make sense that the ancients would have used a symbol that stands for the number zero as the first digit of a six-figure number. (Example: Chest 3 showing a count of 012 210 or 'zero hundred twelve thousand two hundred ten, wouldn't make sense.) </li>
+<p>Press the button below to run the code that solves the riddle. The solution is ran on your browser. Its code was made with emphasis on performance and design.</p>
 <button id="run-button">Solve riddle</button>
 
 <br>
 <p id="note-text"></p>
 <br>
 <p id="solution-log"></p>
+<br>
+<br>
+<p id="analysis"></p>
 
 </body>
