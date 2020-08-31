@@ -5,7 +5,7 @@ $(document).ready(function(){
   $("#run-button").click(() => {
 	const solutionLogElement = $('#solution-log');
 	
-	//need to clear the text in case the user clicks 
+	//Need to clear the text in case the user clicks on the button multiple times during one session.
 	solutionLogElement.text('');
 	$('#analysis').text('');
 	
@@ -13,7 +13,8 @@ $(document).ready(function(){
 	
     runSolution(solutionLogElement);
 	
-	$('#analysis').text('We can see from the result that chest 2 has as many solutions in it as it has possible combinations of symbol meanings. Therefore, chest 2 has a suitable number of pearls in it, regardless of what its numbers mean.</br></br>It took me about 5 hours of work to reach the solution with this program. The sea monsters grew restless but promptly left once receiving the ransom of pearls. Long live Atlantarctica.');
+	$('#analysis').html(`<h2>Conclusion</h2>
+	<p>We can see from the result that chest 2 has as many solutions in it as it has possible combinations of symbol meanings. Every possible combination of symbols is also a possible solution. Therefore, chest 2 has a suitable number of pearls in it, regardless what its numbers mean.<br><br>It took me about 5 hours of work to reach the solution with this program. The sea monsters grew restless but promptly left once receiving the ransom of pearls. Long live Atlantarctica.</p>`);
 	
   });
 });
@@ -70,16 +71,17 @@ const checkSolution = (chestNumber, chestPearlCount, symbols, possibleSolutionsA
 	
 	if (isValidSolution(chestPearlCount)) {
 		foundSolutionsArray[chestNumber]++;
-				
-		htmlElement.append(`${getSolutionMessage(chestNumber, chestPearlCount, symbols)}<br>`);
+		logSolution(true, false, htmlElement, {chestNumber, chestPearlCount, symbols});
+	} else {
+		logSolution(false, false, htmlElement, {chestNumber, chestPearlCount, symbols});
 	}
 }
 
-const getSolutionMessage = (chestNumber, chestPearlCount, symbols) =>{
+const getSolutionMessage = (isValidSolution, {chestNumber, chestPearlCount, symbols}) =>{
 
 	const keys = Object.keys(symbols)
 	
-	let msg = `Chest ${chestNumber} has a solution of ${chestPearlCount}. `
+	let msg = isValidSolution ? `Chest ${chestNumber} has a solution of ${chestPearlCount}. ` : `Chest ${chestNumber} does not have a solution for ${chestPearlCount}. `
 	
 	for (key of keys){
 		msg += `${key}=${symbols[key]}, `;
@@ -88,9 +90,18 @@ const getSolutionMessage = (chestNumber, chestPearlCount, symbols) =>{
 	return msg;
 }
 
+const logSolution = (isValidSolution, consoleLogging, htmlElement, {chestNumber, chestPearlCount, symbols}) =>{
+	const solutionMessage = getSolutionMessage(isValidSolution, {chestNumber, chestPearlCount, symbols});
+	htmlElement.append(`${solutionMessage}<br>`);
+	
+	if (consoleLogging) {
+		console.log(solutionMessage);
+	}
+}
+
 const runSolution = (solutionTextHtmlElement) => {
 
-	solutionTextHtmlElement.append('Starting program..');
+	solutionTextHtmlElement.append('Starting program..<br>');
 	const t0 = performance.now()
 
 
@@ -170,12 +181,14 @@ const runSolution = (solutionTextHtmlElement) => {
 	}
 
 	const t1 = performance.now();
-
+	solutionTextHtmlElement.append('<br>');
 	for (let chestNumber = 1; chestNumber<=5; chestNumber++){
-		solutionTextHtmlElement.append(`${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}<br>`);
+		solutionTextHtmlElement.append(`<li>${getSolutionText(chestNumber, foundSolutionsCount[chestNumber], possibleSolutionsCount[chestNumber])}</li><br>`);
 	}
-
-	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run`);
+	//solutionTextHtmlElement.append('See thorough logging in the browser console.');
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run.<br>`);
+	solutionTextHtmlElement.append('<br>');
 	solutionTextHtmlElement.append('Program finished.');
 }
 
@@ -193,18 +206,20 @@ const runSolution = (solutionTextHtmlElement) => {
 <br>
 <img src="treasure-chests.png"></img>
 <br>
-<p>1. You need to choose 1 of the 5 chests. The ancient numerals display an accurate count of each chest's pearls.</p>
-<p>2. The pearls in your chest must divide into 7 equal piles. Each of those 7 piles must divide into 11 equal piles. Each of those 11 piles must divide into 13 equal piles.</p>
-<p>3. Each of those divisions must leave no remainders.</p>
-<p>4. The ancient numerical system was base 10</p>
+<ol>
+	<li>You need to choose 1 of the 5 chests. The ancient numerals display an accurate count of each chest's pearls.</li>
+	<li>The pearls in your chest must divide into 7 equal piles. Each of those 7 piles must divide into 11 equal piles. Each of those 11 piles must divide into 13 equal piles.</li>
+	<li>Each of those divisions must leave no remainders.</li>
+	<li>The ancient numerical system was base 10</li>
+</ol>
 <br>
 <h2>Solution</h2>
 <p>I have nominated the symbols with imaginative names</p>
-<p>Chest 1: trident, n, trident, n, trident, n</p>
-<p>Chest 2: bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan</p>
-<p>Chest 3: trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident</p>
-<p>Chest 4: stickMan, stickMan, Z, Z, epsilon, epsilon</p>
-<p>Chest 5: house, trident, bowAndArrow, trident, bowAndArrow, house</p>
+<li>Chest 1: trident, n, trident, n, trident, n</li>
+<li>Chest 2: bowAndArrow, stitches, stickMan, bowAndArrow, stitches, stickMan</li>
+<li>Chest 3: trident, bowAndArrow, epsilon, epsilon, bowAndArrow, trident</li>
+<li>Chest 4: stickMan, stickMan, Z, Z, epsilon, epsilon</li>
+<li>Chest 5: house, trident, bowAndArrow, trident, bowAndArrow, house</li>
 <h2>Deductions</h2>
 <p>Here are deductions that helped me reach the solution</p>
 <li>I wish to prove that only one chest will always have the correct number of pearls in it, no matter what its symbols mean. I can do this by writing a program that iterates through every possible combination of symbol meanings, then check if each of those numbers is divisible by the numbers 7, 11 and 13</li>
