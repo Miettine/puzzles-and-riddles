@@ -9,12 +9,15 @@ $(document).ready(function(){
 	solutionLogElement.text('');
 	$('#analysis').text('');
 	
-	$('#note-text').text('Scroll all the way down to view the whole solution.');
+	$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
 	
     runSolution(solutionLogElement);
 	
 	$('#analysis').html(`<h2>Conclusion</h2>
-	<p>We can see from the result that chest 2 has as many solutions in it as it has possible combinations of symbol meanings. Every possible combination of symbols is also a possible solution. Therefore, chest 2 has a suitable number of pearls in it, regardless what its numbers mean.<br><br>It took me about 5 hours of work to reach the solution with this program. The sea monsters grew restless but promptly left once receiving the ransom of pearls. Long live Atlantarctica.</p>`);
+	<p>We can see from the result that chest 2 has as many solutions in it as it has possible combinations of symbol meanings. Every possible combination of symbols is also a possible solution. Therefore, chest 2 has a suitable number of pearls in it, regardless what its numbers mean.</p>
+	<p>It took me about 5 hours of work to reach the solution with this program. The sea monsters grew restless but promptly left once receiving the ransom of pearls.</p>
+	<p>Long live Atlantartica.</p>
+	<b>Lauri Miettinen, King of Atlantartica, September 2020</b>`);
 	
   });
 });
@@ -198,10 +201,9 @@ const runSolution = (solutionTextHtmlElement) => {
 
 <h1>Sea Monster Riddle</h1>
 <h2>Introduction</h2>
-<p>Source of this riddle is on this youtube video https://www.youtube.com/watch?v=YytHuow4VnU. I created this program to solve the riddle without looking at the solution.</p>
+<a>Source of this riddle is on</a> <a href="https://www.youtube.com/watch?v=YytHuow4VnU">this youtube video</a><a>. I created this program to solve the riddle without looking at the solution.</a>
 <br>
-<h3>The riddle is as follows:</h3>
-<br>
+<h2>The Riddle</h2>
 <p>According to legend, once every thousand years a host of sea monsters emerges from the depths to demand tribute from the floating city of Atlantartica. As the ruler of the city, you’d always dismissed the stories… until today, when they rose out of the roiling waters, surrounded your city and demanded a ransom of pearls. Can you figure out which chest of pearls is the ransom?</p>
 <br>
 <img src="treasure-chests.png"></img>
@@ -225,7 +227,7 @@ const runSolution = (solutionTextHtmlElement) => {
 <li>I wish to prove that only one chest will always have the correct number of pearls in it, no matter what its symbols mean. I can do this by writing a program that iterates through every possible combination of symbol meanings, then check if each of those numbers is divisible by the numbers 7, 11 and 13</li>
 <li>Two symbols cannot be the same number. For example, chest 1 cannot have the number 111 111, because the ancients wouldn't have used two different symbols to nominate the same number.</li>
 <li>The symbols n, epsilon, Z and stitches can mean any number from 0 to 9, but the symbols trident, bowAndArrow, stickMan and house can only be a number from 1 to 9. Some treasure chests start with a particular symbol, so it wouldn't make sense that the ancients would have used a symbol that stands for the number zero as the first digit of a six-figure number. (Example: Chest 3 showing a count of 012 210 or 'zero hundred twelve thousand two hundred ten, wouldn't make sense.) </li>
-<p>Press the button below to run the code that solves the riddle. The solution is ran on your browser. Its code was made with emphasis on performance and design.</p>
+<p>Press the button below to run the code that solves the riddle. The solution is ran on your browser. The code was made with emphasis on performance and design.</p>
 <button id="run-button">Solve riddle</button>
 
 <br>
