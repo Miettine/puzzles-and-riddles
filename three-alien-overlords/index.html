@@ -49,7 +49,7 @@ class Overlord {
 		return this.falseWord;
 	}
 
-	getAnswer(id, overlordReference) {
+	getAnswer(id, wordReference) {
 
 		if (this.identity === 'Arr'){
 			const randomizer = getRandomInt(2);
@@ -68,14 +68,22 @@ class Overlord {
 			}
 		} else if (id == referenceQuestion.id){
 
-			if (overlordReference.getIdentity() == 'Arr')
-			if (this.identity === 'Tee'){
-				return this.trueAnswer;
+			if (wordReference.getMeaning() == true) {
+				if (this.identity === 'Tee'){
+					return this.trueAnswer;
+				}
+				if (this.identity === 'Eff'){
+					return this.falseAnswer;
+				}
+			} else if (wordReference.getMeaning() == false){
+				if (this.identity === 'Tee'){
+					return this.falseAnswer;
+				}
+				if (this.identity === 'Eff'){
+					return this.trueAnswer;
+				}
 			}
-
-			if (this.identity === 'Eff'){
-				return this.falseAnswer;
-			}
+			
 		}
 		
 		return "Hmm?"; //If this answer is reached, something is wrong with my code.
@@ -112,36 +120,54 @@ const runSolution = (solutionTextHtmlElement) => {
 	const eff = new Overlord('Eff', wordForTrue, wordForfalse);
 	const arr = new Overlord('Arr', wordForTrue, wordForfalse);
 
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(obviousQuestion.question);
+	solutionTextHtmlElement.append('<br>');
 	let answer1 = tee.getAnswer(obviousQuestion.id);
 	solutionTextHtmlElement.append( `tee: ${answer1.getPronunciation()}`);
 	solutionTextHtmlElement.append('<br>');
+	
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(referenceQuestion.question);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `tee: ${tee.getAnswer(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `eff: ${eff.getAnswer(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `arr: ${arr.getAnswer(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
 
+	solutionTextHtmlElement.append('<br>');
+solutionTextHtmlElement.append(obviousQuestion.question);
+	solutionTextHtmlElement.append('<br>');
 	let answer2 = eff.getAnswer(obviousQuestion.id);
 	solutionTextHtmlElement.append( `eff: ${answer2.getPronunciation()}`);
 	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(referenceQuestion.question);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `tee: ${tee.getAnswer(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `eff: ${eff.getAnswer(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `arr: ${arr.getAnswer(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
 
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(obviousQuestion.question);
+	solutionTextHtmlElement.append('<br>');
 	let answer3 = arr.getAnswer(obviousQuestion.id);
 	solutionTextHtmlElement.append( `arr: ${answer3.getPronunciation()}`);
-
 	solutionTextHtmlElement.append('<br>');
 	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `tee: ${tee.getAnswerWithReference(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append(referenceQuestion.question);
 	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `eff: ${eff.getAnswerWithReference(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append( `tee: ${tee.getAnswer(referenceQuestion.id, answer3).getPronunciation()}`);
 	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `arr: ${arr.getAnswerWithReference(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append( `eff: ${eff.getAnswer(referenceQuestion.id, answer3).getPronunciation()}`);
 	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `tee: ${tee.getAnswerWithReference(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append( `arr: ${arr.getAnswer(referenceQuestion.id, answer3).getPronunciation()}`);
 	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `eff: ${eff.getAnswerWithReference(referenceQuestion.id, answer2).getPronunciation()}`);
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `arr: ${arr.getAnswerWithReference(referenceQuestion.id, answer2).getPronunciation()}`);
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `tee: ${tee.getAnswerWithReference(referenceQuestion.id, answer3).getPronunciation()}`);
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `eff: ${eff.getAnswerWithReference(referenceQuestion.id, answer3).getPronunciation()}`);
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append( `arr: ${arr.getAnswerWithReference(referenceQuestion.id, answer3).getPronunciation()}`);
 
 	const t1 = performance.now();
 
@@ -160,6 +186,7 @@ const runSolution = (solutionTextHtmlElement) => {
 <h1>Three Alien Overlords</h1>
 <h2>Introduction</h2>
 <a>Source of this riddle is on</a> <a href="https://www.youtube.com/watch?v=LKvjIsyYng8">this youtube video</a><a>. I am writing this program to help me solve the riddle without looking at the solution.</a>
+<p>I don't expect this to be easy and I don't expect to reach a solution with this program alone. The goal is to learn as much as possible of the puzzle with this program.</p>
 
 <button id="run-button">Run</button>
 <br>
