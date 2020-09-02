@@ -134,38 +134,84 @@ const runSolution = (printFunction) => {
 
 	printFunction('Starting program..');
 
-	const t0 = performance.now()
+	const t0 = performance.now();
 
-	//Word meanings are hardcoded for now. TODO: Make randomization.
-	const wordForTrue = new Word('Oko', true);
-	const wordForfalse = new Word('Unu', false);
-
+	const wordPronunciations = shuffle(['Oko', 'Unu']);
+	
+	const wordForTrue = new Word(wordPronunciations[0], true);
+	const wordForfalse = new Word(wordPronunciations[1], false);
+	
+	console.log(wordForTrue, wordForfalse);
+	
 	const tee = new OverlordTee(wordForTrue, wordForfalse);
 	const eff = new OverlordEff(wordForTrue, wordForfalse);
 	const arr = new OverlordArr(wordForTrue, wordForfalse);
 	
+	const overlords = shuffle([tee, eff, arr])
+	
+	const [overlord1, overlord2, overlord3] = overlords;
+	console.log(overlords);
+	
 	printFunction(obviousQuestion.question);
 	
-	const anwerOfTeeQuestion1=tee.getAnswer(obviousQuestion.id);
+	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id);
 
-	printFunction(`Overlord 1: ${anwerOfTeeQuestion1.getPronunciation()}`);
+	printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
 	
 	printFunction(referenceQuestion.question);
 	
-	printFunction(`Overlord 1: ${tee.getAnswer(referenceQuestion.id, anwerOfTeeQuestion1).getPronunciation()}`);
-	printFunction(`Overlord 2: ${eff.getAnswer(referenceQuestion.id, anwerOfTeeQuestion1).getPronunciation()}`);
-	printFunction(`Overlord 3: ${arr.getAnswer(referenceQuestion.id, anwerOfTeeQuestion1).getPronunciation()}`);
+	printFunction(`Overlord 1: ${overlord1.getAnswer(referenceQuestion.id, anwerOfLord1Question1).getPronunciation()}`);
+	printFunction(`Overlord 2: ${overlord2.getAnswer(referenceQuestion.id, anwerOfLord1Question1).getPronunciation()}`);
+	printFunction(`Overlord 3: ${overlord3.getAnswer(referenceQuestion.id, anwerOfLord1Question1).getPronunciation()}`);
 	
 	printFunction('Round 2..');
 	
+	const anwerOfLord2Question1 = overlord2.getAnswer(obviousQuestion.id);
+
+	printFunction(`Overlord 2: ${anwerOfLord2Question1.getPronunciation()}`);
+	
+	printFunction(referenceQuestion.question);
+	
+	printFunction(`Overlord 1: ${overlord1.getAnswer(referenceQuestion.id, anwerOfLord2Question1).getPronunciation()}`);
+	printFunction(`Overlord 2: ${overlord2.getAnswer(referenceQuestion.id, anwerOfLord2Question1).getPronunciation()}`);
+	printFunction(`Overlord 3: ${overlord3.getAnswer(referenceQuestion.id, anwerOfLord2Question1).getPronunciation()}`);
+	
+	printFunction('Round 3..');
+	
+	const anwerOfLord3Question1 = overlord3.getAnswer(obviousQuestion.id);
+
+	printFunction(`Overlord 3: ${anwerOfLord3Question1.getPronunciation()}`);
+	
+	printFunction(referenceQuestion.question);
+	
+	printFunction(`Overlord 1: ${overlord1.getAnswer(referenceQuestion.id, anwerOfLord3Question1).getPronunciation()}`);
+	printFunction(`Overlord 2: ${overlord2.getAnswer(referenceQuestion.id, anwerOfLord3Question1).getPronunciation()}`);
+	printFunction(`Overlord 3: ${overlord3.getAnswer(referenceQuestion.id, anwerOfLord3Question1).getPronunciation()}`);
+	
 	const t1 = performance.now();
 
-	//solutionTextHtmlElement.append('See thorough logging in the browser console.');
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run.<br>`);
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append('Program finished.');
+	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
+
+	printFunction('Program finished.');
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
 
 </script>
