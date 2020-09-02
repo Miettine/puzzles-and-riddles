@@ -1,0 +1,173 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+  $("#run-button").click(() => {
+	const solutionLogElement = $('#solution-log');
+	
+	solutionLogElement.text('');
+	$('#analysis').text('');
+	
+	//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
+	
+    runSolution(solutionLogElement);
+	
+  });
+});
+
+class Word {
+	constructor(pronunciation, meaning) {
+		this.pronunciation = pronunciation;
+		this.meaning = meaning === true;
+	}
+	
+	getPronunciation() {
+		return this.pronunciation;
+	}
+	
+	getMeaning() {
+		return this.meaning;
+	}
+}
+
+class Overlord {
+	constructor(identity, trueWord, falseWord) {
+		this.identity = identity;
+		this.trueWord = trueWord;
+		this.falseWord = falseWord;
+	}
+
+	getIdentity(){
+		return this.identity;
+	}
+
+	get trueAnswer (){
+		return this.trueWord;
+	}
+
+	get falseAnswer (){
+		return this.falseWord;
+	}
+
+	getAnswer(id, overlordReference) {
+
+		if (this.identity === 'Arr'){
+			const randomizer = getRandomInt(2);
+			return randomizer == 0 ? this.trueAnswer : this.falseAnswer;
+		}
+
+		if (id == obviousQuestion.id){
+			console.log (this.identity, this.trueWord);
+			
+			if (this.identity === 'Tee'){
+				return this.trueAnswer;
+			}
+
+			if (this.identity === 'Eff'){
+				return this.falseAnswer;
+			}
+		} else if (id == referenceQuestion.id){
+
+			if (overlordReference.getIdentity() == 'Arr')
+			if (this.identity === 'Tee'){
+				return this.trueAnswer;
+			}
+
+			if (this.identity === 'Eff'){
+				return this.falseAnswer;
+			}
+		}
+		
+		return "Hmm?"; //If this answer is reached, something is wrong with my code.
+	}
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+const obviousQuestion = {
+	id: 0,
+	question: 'Is the sky blue?',
+	description: 'An obvious question that you know the answer to.'
+}
+
+const referenceQuestion = {
+	id: 1,
+	question: 'Was the answer to the first question a yes?',
+	overlordReference: undefined,
+	description: "Ask an overlord information on another's answer."
+}
+
+const runSolution = (solutionTextHtmlElement) => {
+
+	solutionTextHtmlElement.append('Starting program..<br>');
+
+	const t0 = performance.now()
+
+	const wordForTrue = new Word('Oko', true);
+	const wordForfalse = new Word('Unu', false);
+
+	const tee = new Overlord('Tee', wordForTrue, wordForfalse);
+	const eff = new Overlord('Eff', wordForTrue, wordForfalse);
+	const arr = new Overlord('Arr', wordForTrue, wordForfalse);
+
+	let answer1 = tee.getAnswer(obviousQuestion.id);
+	solutionTextHtmlElement.append( `tee: ${answer1.getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+
+	let answer2 = eff.getAnswer(obviousQuestion.id);
+	solutionTextHtmlElement.append( `eff: ${answer2.getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+
+	let answer3 = arr.getAnswer(obviousQuestion.id);
+	solutionTextHtmlElement.append( `arr: ${answer3.getPronunciation()}`);
+
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `tee: ${tee.getAnswerWithReference(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `eff: ${eff.getAnswerWithReference(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `arr: ${arr.getAnswerWithReference(referenceQuestion.id, answer1).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `tee: ${tee.getAnswerWithReference(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `eff: ${eff.getAnswerWithReference(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `arr: ${arr.getAnswerWithReference(referenceQuestion.id, answer2).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `tee: ${tee.getAnswerWithReference(referenceQuestion.id, answer3).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `eff: ${eff.getAnswerWithReference(referenceQuestion.id, answer3).getPronunciation()}`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append( `arr: ${arr.getAnswerWithReference(referenceQuestion.id, answer3).getPronunciation()}`);
+
+	const t1 = performance.now();
+
+	//solutionTextHtmlElement.append('See thorough logging in the browser console.');
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run.<br>`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append('Program finished.');
+}
+
+</script>
+
+<body>
+
+<h1>Three Alien Overlords</h1>
+<h2>Introduction</h2>
+<a>Source of this riddle is on</a> <a href="https://www.youtube.com/watch?v=LKvjIsyYng8">this youtube video</a><a>. I am writing this program to help me solve the riddle without looking at the solution.</a>
+
+<button id="run-button">Run</button>
+<br>
+<p id="note-text"></p>
+<br>
+<p id="solution-log"></p>
+<br>
+<br>
+<p id="analysis"></p>
+
+</body>
