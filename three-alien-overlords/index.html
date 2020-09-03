@@ -14,18 +14,14 @@ $(document).ready(function(){
     runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
 	
   });
-  $("#run-analysis-button").click(() => {
+  $("#run-many-times-button").click(() => {
   
-    runAnalysis((logText) => console.log(logText));
+	for (let i = 0; i<1000; i++){
+		runSolution();
+	}
 	
-  });
-  
-	$("#run-brute-force-button").click(() => {
-		const solutionLogElement = $('#solution-log');
-		
-		solutionLogElement.text('');
-		runBruteForce((logText) => solutionLogElement.append(`${logText} <br><br>`));
-	
+	const wonGames = log.filter(game => game.victory).map(game => game.victory).length;
+	$('#solution-log').html(`games: ${log.length}, won: ${wonGames}, ${(wonGames/log.length)*100}%`);
   });
 });
 
@@ -44,22 +40,47 @@ class Word {
 	}
 }
 
+class Idol{
+	constructor(id, name) {
+		this.id = id;
+		this.name = name;
+	}
+	
+	getId(){
+		return this.id;
+	}
+	
+	getName(){
+		return this.name;
+	}
+}
+
 class Overlord {
-	constructor(name, trueWord, falseWord) {
+	constructor(id, name, trueWord, falseWord) {
+		this.id = id;
 		this.name = name;
 		this.trueWord = trueWord;
 		this.falseWord = falseWord;
+	}
+	
+	giveIdol(idol){
+		this.idol = idol;
+		this.pleased = this.idol.getId() === this.id;
+	}
+
+	getId(){
+		return this.id;
 	}
 
 	getName(){
 		return this.name;
 	}
 
-	get trueAnswer (){
+	getTrueAnswer (){
 		return this.trueWord;
 	}
 
-	get falseAnswer (){
+	getFalseAnswer (){
 		return this.falseWord;
 	}
 
@@ -67,30 +88,42 @@ class Overlord {
 		throw new Exception('Not supported');
 
 	}
+	
+	getOpinion(){
+		if (this.idol == null){
+			return 'Give me an idol, you fool. I am displeased!';
+		}
+		
+		return `I am ${this.name}. You gave me the ${this.idol.name}. I am ${this.pleased ? 'pleased': 'displeased'}!`;
+	}
+	
+	isPleased(){
+		return this.pleased;
+	}
 }
 
 class TruthfulOverlord extends Overlord {
-	constructor(name, trueWord, falseWord) {
-		super(name, trueWord, falseWord);
+	constructor(id, name, trueWord, falseWord) {
+		super(id, name, trueWord, falseWord);
 	}
 
 	getAnswer(id, wordReference1, wordReference2) {
 		
 		if (id == obviousQuestion.id){
-			return this.trueAnswer;
+			return this.getFalseAnswer();
 			
 		} else if (id == referenceQuestion.id){
 		
 			if (wordReference1.getMeaning() == true) {
-				return this.trueAnswer;
+				return this.getTrueAnswer();
 			} else if (wordReference1.getMeaning() == false){
-				return this.falseAnswer;
+				return this.getFalseAnswer();
 			}
 		} else if (id == answerComparisonQuestion.id) {
 			if (wordReference1.getMeaning() == true && wordReference2.getMeaning() === true) {
-				return this.trueAnswer;
+				return this.getTrueAnswer();
 			}
-			return this.falseAnswer;
+			return this.getFalseAnswer();
 		}
 		
 		return "Hmm?"; //If this answer is reached, something is wrong with my code.
@@ -98,40 +131,40 @@ class TruthfulOverlord extends Overlord {
 }
 
 class LyingOverlord extends Overlord {
-	constructor(name, trueWord, falseWord) {
-		super(name, trueWord, falseWord);
+	constructor(id, name, trueWord, falseWord) {
+		super(id, name, trueWord, falseWord);
 	}
 
 	getAnswer(id, wordReference1, wordReference2) {
 		
 		if (id == obviousQuestion.id){
-			return this.falseAnswer;
+			return this.getFalseAnswer();
 			
 		} else if (id == referenceQuestion.id){
 
 			if (wordReference1.getMeaning() == true) {
-				return this.falseAnswer;
+				return this.getFalseAnswer();
 			} else if (wordReference1.getMeaning() == false){
-				return this.trueAnswer;
+				return this.getTrueAnswer();
 			}
 		} else if (id == answerComparisonQuestion.id) {
 			if (wordReference1.getMeaning() == true && wordReference2.getMeaning() === true) {
-				return this.falseAnswer;
+				return this.getFalseAnswer();
 			}
-			return this.trueAnswer;
+			return this.getTrueAnswer();
 		}
 		return "Hmm?";
 	}
 }
 
 class RandomOverlord extends Overlord {
-	constructor(name, trueWord, falseWord) {
-		super(name, trueWord, falseWord);
+	constructor(id, name, trueWord, falseWord) {
+		super(id, name, trueWord, falseWord);
 	}
 
 	getAnswer() {
 		const randomizer = getRandomInt(2);
-		return randomizer == 0 ? this.trueAnswer : this.falseAnswer;
+		return randomizer == 0 ? this.getTrueAnswer() : this.getFalseAnswer();
 	}
 }
 
@@ -161,7 +194,7 @@ const log = [];
 
 let gameId = 0;
 
-const runSolution = (printFunction) => {
+const runSolution = (printFunction = ()=>{}) => {
 
 	printFunction('Starting program..');
 
@@ -174,9 +207,13 @@ const runSolution = (printFunction) => {
 	
 	console.log(wordForTrue, wordForfalse);
 	
-	const overlords = shuffle([new TruthfulOverlord('Tee', wordForTrue, wordForfalse), 
-		new LyingOverlord('Eff', wordForTrue, wordForfalse),
-		new RandomOverlord('Arr', wordForTrue, wordForfalse)]);
+	const overlords = shuffle([new TruthfulOverlord(0, 'Tee', wordForTrue, wordForfalse), 
+		new LyingOverlord(1, 'Eff', wordForTrue, wordForfalse),
+		new RandomOverlord(2, 'Arr', wordForTrue, wordForfalse)]);
+		
+	const idolOfTee = new Idol(0, 'Idol of Tee');
+	const idolOfEff = new Idol(1, 'Idol of Eff');
+	const idolOfArr = new Idol(2, 'Idol of Arr');
 	
 	const [overlord1, overlord2, overlord3] = overlords;
 	console.log(overlords);
@@ -247,8 +284,20 @@ const runSolution = (printFunction) => {
 			answer: answerOfLord3Question3.getPronunciation()
 		});
 		
+		if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
+			overlord1.giveIdol(idolOfEff);
+			overlord2.giveIdol(idolOfTee);
+		} else {
+			overlord1.giveIdol(idolOfTee);
+			overlord2.giveIdol(idolOfEff);
+		}
+		overlord3.giveIdol(idolOfArr);
 		
+		printFunction(overlord1.getOpinion());
+		printFunction(overlord2.getOpinion());
+		printFunction(overlord3.getOpinion());
 		
+		gameLog.victory = overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
 	}
 	log.push(gameLog);
 	
@@ -308,7 +357,7 @@ function shuffle(array) {
 <li>I cannot deduce anything after asking the first question, since I don't know if the answer is a yes or a no. The only correct choice is to ask the second Overlord in line a question. It also makes no sense to ask the same question from the second overlord since the first answer gave me no information. The second question must be different from the first.</li>
 <br><br>
 <button id="run-button">Run</button>
-<button id="run-analysis-button">Run analysis</button>
+<button id="run-many-times-button">Run many times</button>
 <br>
 <p id="note-text"></p>
 <br>
