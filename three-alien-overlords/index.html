@@ -11,19 +11,36 @@ $(document).ready(function(){
 	
 	//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
 	
-    runSolution((logText) => solutionLogElement.append(`${logText} <br><br>`));
+    runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
+	
+  });
+  $("#run-analysis-button").click(() => {
+  
+    runAnalysis((logText) => console.log(logText));
+	
+  });
+  
+	$("#run-brute-force-button").click(() => {
+		const solutionLogElement = $('#solution-log');
+		
+		solutionLogElement.text('');
+		runBruteForce((logText) => solutionLogElement.append(`${logText} <br><br>`));
 	
   });
 });
 
 class Word {
-	constructor(pronunciation, meaning) {
-		this.pronunciation = pronunciation;
+	constructor(information, meaning) {
+		this.information = information;
 		this.meaning = meaning === true;
 	}
 	
+	getId() {
+		return this.identity.id;
+	}
+	
 	getPronunciation() {
-		return this.pronunciation;
+		return this.information.pronunciation;
 	}
 	
 	getMeaning() {
@@ -38,8 +55,8 @@ class Overlord {
 		this.falseWord = falseWord;
 	}
 
-	getIdentity(){
-		return this.identity;
+	getId(){
+		return this.identity.id;
 	}
 
 	get trueAnswer (){
@@ -56,9 +73,9 @@ class Overlord {
 	}
 }
 
-class OverlordTee extends Overlord {
-	constructor(trueWord, falseWord) {
-		super('Tee', trueWord, falseWord);
+class TruthfulOverlord extends Overlord {
+	constructor(identity, trueWord, falseWord) {
+		super(identity, trueWord, falseWord);
 	}
 
 	getAnswer(id, wordReference1, wordReference2) {
@@ -84,9 +101,9 @@ class OverlordTee extends Overlord {
 	}
 }
 
-class OverlordEff extends Overlord {
-	constructor(trueWord, falseWord) {
-		super('Eff', trueWord, falseWord);
+class LyingOverlord extends Overlord {
+	constructor(information, trueWord, falseWord) {
+		super(information, trueWord, falseWord);
 	}
 
 	getAnswer(id, wordReference1, wordReference2) {
@@ -111,18 +128,36 @@ class OverlordEff extends Overlord {
 	}
 }
 
-class OverlordArr extends Overlord {
-	constructor(trueWord, falseWord) {
-		super('Arr', trueWord, falseWord);
+class RandomOverlord extends Overlord {
+	constructor(information, trueWord, falseWord) {
+		super(information, trueWord, falseWord);
 	}
 
-	getAnswer(id) {
+	getAnswer() {
 		const randomizer = getRandomInt(2);
 		return randomizer == 0 ? this.trueAnswer : this.falseAnswer;
 	}
 }
 
+class AgreeableOverlord extends Overlord {
+	constructor(information, trueWord) {
+		super(information, trueWord);
+	}
 
+	getAnswer() {
+		return this.trueAnswer;
+	}
+}
+
+class DisagreeableOverlord extends Overlord {
+	constructor(information, falseWord) {
+		super(information, falseWord);
+	}
+
+	getAnswer() {
+		return this.falseWord;
+	}
+}
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -152,18 +187,16 @@ const runSolution = (printFunction) => {
 
 	const t0 = performance.now();
 
-	const wordPronunciations = shuffle(['Oko', 'Unu']);
+	const wordPronunciations = shuffle([{id:0, pronunciation:'Oko'}, {id:1, pronunciation:'Unu'}]);
 	
 	const wordForTrue = new Word(wordPronunciations[0], true);
 	const wordForfalse = new Word(wordPronunciations[1], false);
 	
 	console.log(wordForTrue, wordForfalse);
 	
-	const tee = new OverlordTee(wordForTrue, wordForfalse);
-	const eff = new OverlordEff(wordForTrue, wordForfalse);
-	const arr = new OverlordArr(wordForTrue, wordForfalse);
-	
-	const overlords = shuffle([tee, eff, arr])
+	const overlords = shuffle([new TruthfulOverlord({id:0, name:'Tee'}, wordForTrue, wordForfalse), 
+		new LyingOverlord({id:1, name:'Eff'}, wordForTrue, wordForfalse),
+		new RandomOverlord({id:2, name:'Arr'}, wordForTrue, wordForfalse)]);
 	
 	const [overlord1, overlord2, overlord3] = overlords;
 	console.log(overlords);
@@ -172,7 +205,7 @@ const runSolution = (printFunction) => {
 		
 		const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id);
 		printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
-		
+
 		printFunction(referenceQuestion.question);
 		const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, anwerOfLord1Question1);
 		printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
@@ -182,7 +215,7 @@ const runSolution = (printFunction) => {
 		printFunction(`Overlord 1: ${overlord1.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord2Question2).getPronunciation()}`);
 		printFunction(`Overlord 2: ${overlord2.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord2Question2).getPronunciation()}`);
 		printFunction(`Overlord 3: ${overlord3.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord2Question2).getPronunciation()}`);
-	}
+	}/* Disabled the second round.
 	printFunction('Round 2..');
 	{
 		printFunction(obviousQuestion.question);
@@ -199,38 +232,76 @@ const runSolution = (printFunction) => {
 		printFunction(`Overlord 1: ${overlord1.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord1Question2).getPronunciation()}`);
 		printFunction(`Overlord 2: ${overlord2.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord1Question2).getPronunciation()}`);
 		printFunction(`Overlord 3: ${overlord3.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord1Question2).getPronunciation()}`);
-	}
-	/*
-	printFunction('Round 2..');
-	printFunction(obviousQuestion.question);
-	const anwerOfLord2Question1 = overlord2.getAnswer(obviousQuestion.id);
-
-	printFunction(`Overlord 2: ${anwerOfLord2Question1.getPronunciation()}`);
+	}*/
 	
-	printFunction(referenceQuestion.question);
-	
-	printFunction(`Overlord 1: ${overlord1.getAnswer(referenceQuestion.id, anwerOfLord2Question1).getPronunciation()}`);
-	printFunction(`Overlord 2: ${overlord2.getAnswer(referenceQuestion.id, anwerOfLord2Question1).getPronunciation()}`);
-	printFunction(`Overlord 3: ${overlord3.getAnswer(referenceQuestion.id, anwerOfLord2Question1).getPronunciation()}`);
-	
-	printFunction('Round 3..');
-	printFunction(obviousQuestion.question);
-	
-	const anwerOfLord3Question1 = overlord3.getAnswer(obviousQuestion.id);
-
-	printFunction(`Overlord 3: ${anwerOfLord3Question1.getPronunciation()}`);
-	
-	printFunction(referenceQuestion.question);
-	
-	printFunction(`Overlord 1: ${overlord1.getAnswer(referenceQuestion.id, anwerOfLord3Question1).getPronunciation()}`);
-	printFunction(`Overlord 2: ${overlord2.getAnswer(referenceQuestion.id, anwerOfLord3Question1).getPronunciation()}`);
-	printFunction(`Overlord 3: ${overlord3.getAnswer(referenceQuestion.id, anwerOfLord3Question1).getPronunciation()}`);
-	*/
 	const t1 = performance.now();
 
 	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
 
 	printFunction('Program finished.');
+}
+
+/*
+obviousQuestion
+referenceQuestion
+answerComparisonQuestion
+*/
+class DirectedQuestion {
+	constructor(question, receiverOrderNumber) {
+		this.question = question;
+		this.receiverOrderNumber = receiverOrderNumber;
+	}
+	
+	setAnswer(answer) {
+		this.answer=answer;
+	}
+	
+	getAnswer() {
+		return this.answer;
+	}
+}
+
+const runAnalysis = (outputFunction) => {
+	const wordOko = {id:0, pronunciation:'Oko'};
+	const wordUnu = {id:1, pronunciation:'Unu'};
+	
+	//const directedQuestions = [new DirectedQuestion(obviousQuestion, 0), new DirectedQuestion(obviousQuestion, 1), new DirectedQuestion(obviousQuestion, 2)]
+	{
+		const wordForTrue = new Word(wordOko, true);
+		const wordForfalse = new Word(wordUnu, false);
+		const overlordConfigurations = getOverlordConfigurations(wordForTrue, wordForfalse);
+		console.log(wordForTrue, wordForfalse, overlordConfigurations);
+	}
+	
+	{
+		const wordForTrue = new Word(wordUnu, true);
+		const wordForfalse = new Word(wordOko, false);
+		const overlordConfigurations = getOverlordConfigurations(wordForTrue, wordForfalse);
+		console.log(wordForTrue, wordForfalse, overlordConfigurations);
+	}
+}
+
+const getOverlordConfigurations = (wordForTrue, wordForfalse) => {
+	const tee = new TruthfulOverlord({id:0, name:'Tee'}, wordForTrue, wordForfalse);
+	const eff = new LyingOverlord({id:1, name:'Eff'}, wordForTrue, wordForfalse);
+	const agg = new AgreeableOverlord({id:2, name:'Agg'}, wordForTrue);
+	const dis = new DisagreeableOverlord({id:2, name:'Dis'}, wordForfalse);
+	
+	const overlords1 = [tee, eff, agg];
+	const overlords2 = [tee, agg, eff];
+	const overlords3 = [eff, tee, agg];
+	const overlords4 = [eff, agg, tee];
+	const overlords5 = [agg, tee, eff];
+	const overlords6 = [agg, eff, tee];
+	
+	const overlords7 = [tee, eff, dis];
+	const overlords8 = [tee, dis, eff];
+	const overlords9 = [eff, tee, dis];
+	const overlords10 = [eff, dis, tee];
+	const overlords11 = [dis, tee, eff];
+	const overlords12 = [dis, eff, tee];
+	
+	return [overlords1, overlords2, overlords3, overlords4, overlords5, overlords6, overlords7, overlords8, overlords9, overlords10, overlords11, overlords12];
 }
 
 function shuffle(array) {
@@ -252,6 +323,8 @@ function shuffle(array) {
   return array;
 }
 
+
+
 </script>
 
 <body>
@@ -262,21 +335,22 @@ function shuffle(array) {
 <p>I don't expect this to be easy and I don't expect to reach a solution with this program alone. The goal is to learn as much as possible of the puzzle with this program.</p>
 <h2>Deductions</h2>
 <p>Here are deductions that I have made this far</p>
-<li>The odds of guessing the overlords correctly is 1/3 * 1/2 = 1/6 or about 16.7%. The goal is for the questions to narrow that down to a higher percentage.</li>
+<li>The odds of guessing the overlords correctly is 1/3 * 1/2 = 1/6 or about 16.7%. There are six different ways to present the idols to the overlords.</li>
 <li>The correct solution will have a 100% success rate, regardless of the order that the overlords appear and what the meaning for the words oko and unu are.</li>
 
 <li>If I asked the same overlord three questions, it would help me figure who that overlord is. Then I would have a 50% chance of guessing the other two. I doubt that asking the same overlord three questions is the right way to go.</li>
 <li>The possible combinations of directing questions to overlords is as follows. The number refers to which overlord you're addressing the question to (1,1,2 means 'Ask the first overlord a question, then the first one again, then the second one'):</li>
-
 <ol>
 	1, 1, 2<br>
 	1, 2, 2<br>
 	1, 2, 1<br>
 	1, 2, 3<br>
 </ol>
-<li>'Ask the first one in line a question, then ask the second, then ask the second one again' is fundamentally the same as 'Ask the first one in line a question, then ask the third, then ask the third one again'. This is because I don't know which is which.</li>
+<li>'Ask the first one in line a question, then ask the second, then ask the second one again' is fundamentally the same as 'Ask the first one in line a question, then ask the third, then ask the third one again'. This is because I don't know which overlord is which.</li>
+<li>I cannot deduce anything after asking the first question, since I don't know if the answer is a yes or a no. The only correct choice is to ask the second Overlord in line a question. It also makes no sense to ask the same question from the second overlord since the first answer gave me no information. The second question must be different from the first.</li>
 <br><br>
 <button id="run-button">Run</button>
+<button id="run-analysis-button">Run analysis</button>
 <br>
 <p id="note-text"></p>
 <br>
