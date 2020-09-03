@@ -135,26 +135,6 @@ class RandomOverlord extends Overlord {
 	}
 }
 
-class AgreeableOverlord extends Overlord {
-	constructor(name, trueWord) {
-		super(name, trueWord);
-	}
-
-	getAnswer() {
-		return this.trueAnswer;
-	}
-}
-
-class DisagreeableOverlord extends Overlord {
-	constructor(name, falseWord) {
-		super(name, falseWord);
-	}
-
-	getAnswer() {
-		return this.falseAnswer;
-	}
-}
-
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -266,6 +246,9 @@ const runSolution = (printFunction) => {
 			addressedTo:2,
 			answer: answerOfLord3Question3.getPronunciation()
 		});
+		
+		
+		
 	}
 	log.push(gameLog);
 	
@@ -277,88 +260,6 @@ const runSolution = (printFunction) => {
 	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
 
 	printFunction('Program finished.');
-}
-
-/* Disabled the second round.
-	printFunction('Round 2..');
-	{
-		printFunction(obviousQuestion.question);
-		
-		const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id);
-		printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
-		
-		printFunction(referenceQuestion.question);
-		const anwerOfLord1Question2 = overlord1.getAnswer(referenceQuestion.id, anwerOfLord1Question1);
-		printFunction(`Overlord 1: ${anwerOfLord1Question2.getPronunciation()}`);
-		
-		printFunction(answerComparisonQuestion.question);
-		
-		printFunction(`Overlord 1: ${overlord1.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord1Question2).getPronunciation()}`);
-		printFunction(`Overlord 2: ${overlord2.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord1Question2).getPronunciation()}`);
-		printFunction(`Overlord 3: ${overlord3.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord1Question2).getPronunciation()}`);
-	}*/
-
-/*
-obviousQuestion
-referenceQuestion
-answerComparisonQuestion
-*/
-class DirectedQuestion {
-	constructor(question, receiverOrderNumber) {
-		this.question = question;
-		this.receiverOrderNumber = receiverOrderNumber;
-	}
-	
-	setAnswer(answer) {
-		this.answer=answer;
-	}
-	
-	getAnswer() {
-		return this.answer;
-	}
-}
-
-const runAnalysis = (outputFunction) => {
-	const wordOko = {id:0, pronunciation:'Oko'};
-	const wordUnu = {id:1, pronunciation:'Unu'};
-	
-	//const directedQuestions = [new DirectedQuestion(obviousQuestion, 0), new DirectedQuestion(obviousQuestion, 1), new DirectedQuestion(obviousQuestion, 2)]
-	{
-		const wordForTrue = new Word(wordOko, true);
-		const wordForfalse = new Word(wordUnu, false);
-		const overlordConfigurations = getOverlordConfigurations(wordForTrue, wordForfalse);
-		console.log(wordForTrue, wordForfalse, overlordConfigurations);
-	}
-	
-	{
-		const wordForTrue = new Word(wordUnu, true);
-		const wordForfalse = new Word(wordOko, false);
-		const overlordConfigurations = getOverlordConfigurations(wordForTrue, wordForfalse);
-		console.log(wordForTrue, wordForfalse, overlordConfigurations);
-	}
-}
-
-const getOverlordConfigurations = (wordForTrue, wordForfalse) => {
-	const tee = new TruthfulOverlord({id:0, name:'Tee'}, wordForTrue, wordForfalse);
-	const eff = new LyingOverlord({id:1, name:'Eff'}, wordForTrue, wordForfalse);
-	const agg = new AgreeableOverlord({id:2, name:'Agg'}, wordForTrue);
-	const dis = new DisagreeableOverlord({id:2, name:'Dis'}, wordForfalse);
-	
-	const overlords1 = [tee, eff, agg];
-	const overlords2 = [tee, agg, eff];
-	const overlords3 = [eff, tee, agg];
-	const overlords4 = [eff, agg, tee];
-	const overlords5 = [agg, tee, eff];
-	const overlords6 = [agg, eff, tee];
-	
-	const overlords7 = [tee, eff, dis];
-	const overlords8 = [tee, dis, eff];
-	const overlords9 = [eff, tee, dis];
-	const overlords10 = [eff, dis, tee];
-	const overlords11 = [dis, tee, eff];
-	const overlords12 = [dis, eff, tee];
-	
-	return [overlords1, overlords2, overlords3, overlords4, overlords5, overlords6, overlords7, overlords8, overlords9, overlords10, overlords11, overlords12];
 }
 
 function shuffle(array) {
