@@ -284,7 +284,13 @@ const runSolution = (printFunction = ()=>{}) => {
 			answer: answerOfLord3Question3.getPronunciation()
 		});
 
-		runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
+		//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
+		
+		runFortyPercentSolution(
+			{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3}, 
+			{overlord1, overlord2, overlord3}, 
+			{idolOfTee, idolOfEff, idolOfArr}
+		);
 
 		printFunction(overlord1.getOpinion());
 		printFunction(overlord2.getOpinion());
@@ -302,6 +308,28 @@ const runSolution = (printFunction = ()=>{}) => {
 	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
 
 	printFunction('Program finished.');
+}
+
+/**
+* This solution yields a 40% success rate.
+*/
+const runFortyPercentSolution = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr}) => {
+
+	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
+		if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
+			overlord1.giveIdol(idolOfEff);
+			overlord2.giveIdol(idolOfTee);
+			overlord3.giveIdol(idolOfArr);
+		} else { //If the second and third answers are not the same
+			overlord1.giveIdol(idolOfArr);
+			overlord2.giveIdol(idolOfTee);
+			overlord3.giveIdol(idolOfEff);
+		}
+	} else {
+		overlord1.giveIdol(idolOfTee);
+		overlord2.giveIdol(idolOfEff);
+		overlord3.giveIdol(idolOfArr);
+	}
 }
 
 /**
@@ -363,6 +391,7 @@ function shuffle(array) {
 </ol>
 <li>'Ask the first one in line a question, then ask the second, then ask the second one again' is fundamentally the same as 'Ask the first one in line a question, then ask the third, then ask the third one again'. This is because I don't know which overlord is which.</li>
 <li>I cannot deduce anything after asking the first question, since I don't know if the answer is a yes or a no. The only correct choice is to ask the second Overlord in line a question. It also makes no sense to ask the same question from the second overlord since the first answer gave me no information. The second question must be different from the first.</li>
+<li>Maybe I do not need to worry about which word stands for yes and no. Perhaps the solution can only be found by comparing whether the answers are the same or if they are different.</li>
 <br><br>
 <button id="run-button">Run</button>
 <button id="run-many-times-button">Run many times</button>
