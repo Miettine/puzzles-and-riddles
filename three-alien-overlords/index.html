@@ -283,16 +283,9 @@ const runSolution = (printFunction = ()=>{}) => {
 			addressedTo:2,
 			answer: answerOfLord3Question3.getPronunciation()
 		});
-		
-		if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-			overlord1.giveIdol(idolOfEff);
-			overlord2.giveIdol(idolOfTee);
-		} else {
-			overlord1.giveIdol(idolOfTee);
-			overlord2.giveIdol(idolOfEff);
-		}
-		overlord3.giveIdol(idolOfArr);
-		
+
+		runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
+
 		printFunction(overlord1.getOpinion());
 		printFunction(overlord2.getOpinion());
 		printFunction(overlord3.getOpinion());
@@ -309,6 +302,21 @@ const runSolution = (printFunction = ()=>{}) => {
 	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
 
 	printFunction('Program finished.');
+}
+
+/**
+* This solution yields a 33% success rate.
+*/
+const runOneThirdSolution = ({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr}) => {
+
+	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
+		overlord1.giveIdol(idolOfEff);
+		overlord2.giveIdol(idolOfTee);
+	} else {
+		overlord1.giveIdol(idolOfTee);
+		overlord2.giveIdol(idolOfEff);
+	}
+	overlord3.giveIdol(idolOfArr);
 }
 
 function shuffle(array) {
