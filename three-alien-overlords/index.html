@@ -98,7 +98,7 @@ class Overlord {
 	}
 	
 	isPleased(){
-		return this.pleased;
+		return this.pleased == true;
 	}
 }
 
@@ -186,7 +186,7 @@ const referenceQuestion = {
 
 const answerComparisonQuestion = {
 	id: 2,
-	question: 'Did the last two answers agree with each other?',
+	question: 'Were the last two answers a yes?',
 	description: 'Asks the overlord to compare two answers'
 }
 
@@ -200,7 +200,7 @@ const runSolution = (printFunction = ()=>{}) => {
 
 	const t0 = performance.now();
 
-	const wordPronunciations = shuffle(['Oko', 'Unu']);
+	const wordPronunciations = shuffle(['Ozo', 'Ulu']);
 	
 	const wordForTrue = new Word(wordPronunciations[0], true);
 	const wordForfalse = new Word(wordPronunciations[1], false);
@@ -225,7 +225,27 @@ const runSolution = (printFunction = ()=>{}) => {
 		wordForfalse
 	}
 		
-	{
+	getSolution1([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction);
+	
+	printFunction(overlord1.getOpinion());
+	printFunction(overlord2.getOpinion());
+	printFunction(overlord3.getOpinion());
+	
+	gameLog.victory = overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
+	
+	log.push(gameLog);
+	
+	console.log(log);
+	gameId++;
+	
+	const t1 = performance.now();
+
+	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
+
+	printFunction('Program finished.');
+}
+
+const getSolution1 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) =>{
 		printFunction(obviousQuestion.question);
 		
 		const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id);
@@ -311,23 +331,7 @@ const runSolution = (printFunction = ()=>{}) => {
 
 		}
 
-		printFunction(overlord1.getOpinion());
-		printFunction(overlord2.getOpinion());
-		printFunction(overlord3.getOpinion());
-		
-		gameLog.victory = overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
 	}
-	log.push(gameLog);
-	
-	console.log(log);
-	gameId++;
-	
-	const t1 = performance.now();
-
-	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
-
-	printFunction('Program finished.');
-}
 
 /**
 * This solution yields a 40% success rate.
@@ -398,7 +402,7 @@ function shuffle(array) {
 <h2>Deductions</h2>
 <p>Here are deductions that I have made this far</p>
 <li>The odds of guessing the overlords correctly is 1/3 * 1/2 = 1/6 or about 16.7%. There are six different ways to present the idols to the overlords.</li>
-<li>The correct solution will have a 100% success rate, regardless of the order that the overlords appear and what the meaning for the words oko and unu are.</li>
+<li>The correct solution will have a 100% success rate, regardless of the order that the overlords appear and what the meaning for the words ozo and ulu are.</li>
 
 <li>If I asked the same overlord three questions, it would help me figure who that overlord is. Then I would have a 50% chance of guessing the other two. I doubt that asking the same overlord three questions is the right way to go.</li>
 <li>The possible combinations of directing questions to overlords is as follows. The number refers to which overlord you're addressing the question to (1,1,2 means 'Ask the first overlord a question, then the first one again, then the second one'):</li>
@@ -414,29 +418,29 @@ function shuffle(array) {
 <li>Some ideas for questions:</li>
 	- Are those last two answers different?<br>
 	- Are there more yes-answers than no-answers?<br>
-	- Are there more unu-answers than oko-answers?<br>
-	- Does the word unu stand for 'true'?
+	- Are there more ulu-answers than ozo-answers?<br>
+	- Does the word ulu stand for 'true'?
 	- Were the last two answers a yes?
 	- Were the last two answers the same?
 	- Were the last two answers a no?
 	- Is that the overlord who answers randomly?
 	- Is one of those two overlords the one who answers randomly?
-	- Using the operators AND or OR in a question: "Is the sky blue or does the word 'oko' stand for 'yes'?"
+	- Using the operators AND or OR in a question: "Is the sky blue or does the word 'ozo' stand for 'yes'?"
 	<br>
 <li>I must be careful not ask stupid questions. Example:
-- If answers to the first questions are 'oko' and 'oko' and if I asked the third question 'Are the answers to the first two questions the same'` - I would be asking an obvious thing that I already know. This would be the equivalent of asking whether the sky is blue. Since there are only three questions to ask, I must make the most of every question that I get and get as much information as possible with each question.</li>
+- If answers to the first questions are 'ozo' and 'ozo' and if I asked the third question 'Are the answers to the first two questions the same'` - I would be asking an obvious thing that I already know. This would be the equivalent of asking whether the sky is blue. Since there are only three questions to ask, I must make the most of every question that I get and get as much information as possible with each question.</li>
 <li>Here are how many combinations of answers to the three questions I can get:
 <ol>
-	<li>oko, oko, oko</li>
-	<li>oko, oko, unu</li>
-	<li>oko, unu, oko</li>
-	<li>oko, unu, unu</li>
-	<li>unu, oko, oko</li>
-	<li>unu, oko, unu</li>
-	<li>unu, unu, oko</li>
-	<li>unu, unu, unu</li>
+	<li>ozo, ozo, ozo</li>
+	<li>ozo, ozo, ulu</li>
+	<li>ozo, ulu, ozo</li>
+	<li>ozo, ulu, ulu</li>
+	<li>ulu, ozo, ozo</li>
+	<li>ulu, ozo, ulu</li>
+	<li>ulu, ulu, ozo</li>
+	<li>ulu, ulu, ulu</li>
 </ol>
-So this adds up to 8 (like a binary number of three bits). If I do not know which word stands for 'yes' and 'no', I only have half as much because receiving the answers "oko, oko, unu" is the equivalent of receiving the answers "unu, unu, oko".
+So this adds up to 8 (like a binary number of three bits). If I do not know which word stands for 'yes' and 'no', I only have half as much because receiving the answers "ozo, ozo, ulu" is the equivalent of receiving the answers "ulu, ulu, ozo".
 <li>Here are all configurations that the overlords can appear in:</li>
 
 <ol>
@@ -448,7 +452,7 @@ So this adds up to 8 (like a binary number of three bits). If I do not know whic
 	<li>Arr, Eff, Tee</li>
 </ol>
 <li>Since there are 8 combinations of receiving answers to the three questions and only six combinations for the order that the overlords could appear in, <b>this riddle is probably not impossible to solve.</b> It might be possible to find questions that can receive answers that can be mapped to a specific order of the overlords.</li>
-<li>If I do not know which word stands for 'yes' and 'no', I have only four combinations of answers. Therefore, it is imperative that I must find the meanings of the word "unu" and "oko" with my questions.</li>
+<li>If I do not know which word stands for 'yes' and 'no', I have only four combinations of answers. Therefore, it is imperative that I must find the meanings of the word "ulu" and "ozo" with my questions.</li>
 <br><br>
 <button id="run-button">Run</button>
 <button id="run-many-times-button">Run many times</button>
