@@ -3,7 +3,7 @@
 
 $(document).ready(function(){
   $("#run-button").click(() => {
-  
+	const t0 = performance.now();
 	const solutionLogElement = $('#solution-log');
 	
 	solutionLogElement.text('');
@@ -13,9 +13,15 @@ $(document).ready(function(){
 	
     runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
 	
+	const t1 = performance.now();
+
+	setTimer($('#timer'), t1 - t0);
+	
 	console.log(log);
   });
   $("#run-many-times-button").click(() => {
+	
+	const t0 = performance.now();
   
 	for (let i = 0; i<1000; i++){
 		runSolution();
@@ -24,9 +30,17 @@ $(document).ready(function(){
 	const wonGames = log.filter(game => game.victory).map(game => game.victory).length;
 	$('#solution-log').html(`games: ${log.length}, won: ${wonGames}, ${(wonGames/log.length)*100}%`);
 	
+	const t1 = performance.now();
+
+	setTimer($('#timer'), t1 - t0);
+	
 	console.log(log);
   });
 });
+
+const setTimer = (timerElement, time) => {
+	$('#timer').html(`The program took ${time} milliseconds to run.<br>`);
+}
 
 class Word {
 	constructor(pronunciation, meaning) {
@@ -220,8 +234,6 @@ const runSolution = (printFunction = ()=>{}) => {
 
 	printFunction('Starting program..');
 
-	const t0 = performance.now();
-
 	const wordPronunciations = shuffle(['Ozo', 'Ulu']);
 	
 	const wordForTrue = new Word(wordPronunciations[0], true);
@@ -258,10 +270,6 @@ const runSolution = (printFunction = ()=>{}) => {
 	log.push(gameLog);
 	
 	gameId++;
-	
-	const t1 = performance.now();
-
-	printFunction(`The program took ${t1 - t0} milliseconds to run.<br>`);
 
 	printFunction('Program finished.');
 }
@@ -611,7 +619,6 @@ So this adds up to 8 (like a binary number of three bits). If I do not know whic
 <br>
 <p id="solution-log"></p>
 <br>
-<br>
-<p id="analysis"></p>
+<p id="timer"></p>
 
 </body>
