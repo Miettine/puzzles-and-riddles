@@ -4,3 +4,9 @@ A repository for solving code puzzles, challenges and riddles. Created by Lauri 
 [Sea Monster Riddle](sea-monster-riddle)
 
 - System requirements: a modern web browser (code uses ES6 features)
+
+[Three Alien Overlords](three-alien-overlords)
+
+- Work in progress
+
+- System requirements: a modern web browser (code uses ES6 features)

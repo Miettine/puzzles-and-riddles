@@ -13,6 +13,7 @@ $(document).ready(function(){
 	
     runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
 	
+	console.log(log);
   });
   $("#run-many-times-button").click(() => {
   
@@ -22,6 +23,8 @@ $(document).ready(function(){
 	
 	const wonGames = log.filter(game => game.victory).map(game => game.victory).length;
 	$('#solution-log').html(`games: ${log.length}, won: ${wonGames}, ${(wonGames/log.length)*100}%`);
+	
+	console.log(log);
   });
 });
 
@@ -84,7 +87,7 @@ class Overlord {
 		return this.falseWord;
 	}
 
-	getAnswer(id, wordReference1, wordReference2) {
+	getAnswer(id, {wordReference1, wordReference2}) {
 		throw new Exception('Not supported');
 
 	}
@@ -107,7 +110,8 @@ class TruthfulOverlord extends Overlord {
 		super(id, name, trueWord, falseWord);
 	}
 
-	getAnswer(id, wordReference1, wordReference2) {
+	getAnswer(id, references) {
+		const {wordReference1, wordReference2, overlordReference } = references || {};
 		
 		if (id == obviousQuestion.id){
 			return this.getFalseAnswer();
@@ -124,9 +128,14 @@ class TruthfulOverlord extends Overlord {
 				return this.getTrueAnswer();
 			}
 			return this.getFalseAnswer();
+		} else if (id == randomOverlordIdentityQuestion.id) {
+			if (overlordReference instanceof RandomOverlord) {
+				return this.getTrueAnswer();
+			}
+			return this.getFalseAnswer();
 		}
 		
-		return "Hmm?"; //If this answer is reached, something is wrong with my code.
+		return new Word('Hmm?', undefined); //If this answer is reached, something is wrong with my code.
 	}
 }
 
@@ -135,7 +144,8 @@ class LyingOverlord extends Overlord {
 		super(id, name, trueWord, falseWord);
 	}
 
-	getAnswer(id, wordReference1, wordReference2) {
+	getAnswer(id, references) {
+		const {wordReference1, wordReference2, overlordReference } = references || {};
 		
 		if (id == obviousQuestion.id){
 			return this.getFalseAnswer();
@@ -152,8 +162,13 @@ class LyingOverlord extends Overlord {
 				return this.getFalseAnswer();
 			}
 			return this.getTrueAnswer();
+		} else if (id == randomOverlordIdentityQuestion.id) {
+			if (overlordReference instanceof RandomOverlord) {
+				return this.getTrueAnswer();
+			}
+			return this.getFalseAnswer();
 		}
-		return "Hmm?";
+		return new Word('Hmm?', undefined);
 	}
 }
 
@@ -188,6 +203,13 @@ const answerComparisonQuestion = {
 	id: 2,
 	question: 'Were the last two answers a yes?',
 	description: 'Asks the overlord to compare two answers'
+}
+
+
+const randomOverlordIdentityQuestion = {
+	id:3,
+	question: 'Is that the overlord who answers randomly?',
+	description: 'Used to determine the identity of the randomly answering one.'
 }
 
 const log = [];
@@ -225,7 +247,7 @@ const runSolution = (printFunction = ()=>{}) => {
 		wordForfalse
 	}
 		
-	getSolution1([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction);
+	getSolution2([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction);
 	
 	printFunction(overlord1.getOpinion());
 	printFunction(overlord2.getOpinion());
@@ -235,7 +257,6 @@ const runSolution = (printFunction = ()=>{}) => {
 	
 	log.push(gameLog);
 	
-	console.log(log);
 	gameId++;
 	
 	const t1 = performance.now();
@@ -245,93 +266,219 @@ const runSolution = (printFunction = ()=>{}) => {
 	printFunction('Program finished.');
 }
 
-const getSolution1 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) =>{
-		printFunction(obviousQuestion.question);
-		
-		const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id);
-		printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
+const getSolution2 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) => {
+	printFunction(obviousQuestion.question);
+	
+	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
+	printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
 
 
-		
-		questionsAndAnswers.push({
-			question: obviousQuestion,
-			orderNumber: 0,
-			addressedTo:0,
-			answer: anwerOfLord1Question1.getPronunciation()
-		});
+	
+	questionsAndAnswers.push({
+		question: obviousQuestion,
+		orderNumber: 0,
+		addressedTo:0,
+		answer: anwerOfLord1Question1.getPronunciation()
+	});
 
-		printFunction(referenceQuestion.question);
-		const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, anwerOfLord1Question1);
-		printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
+	printFunction(referenceQuestion.question);
+	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {wordReference1: anwerOfLord1Question1});
+	printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
 
-		questionsAndAnswers.push({
-			question: referenceQuestion,
-			orderNumber: 1,
-			addressedTo: 1,
-			answer: anwerOfLord2Question2.getPronunciation()
-		});
+	questionsAndAnswers.push({
+		question: referenceQuestion,
+		orderNumber: 1,
+		addressedTo: 1,
+		answer: anwerOfLord2Question2.getPronunciation()
+	});
+	
+	printFunction(randomOverlordIdentityQuestion.question);
+	
+	const references = {overlordReference: overlord1};
+	
+	const answerOfLord1Question3 = overlord1.getAnswer(randomOverlordIdentityQuestion.id, references)
+	printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+	
+	const answerOfLord2Question3 = overlord2.getAnswer(randomOverlordIdentityQuestion.id, references)
+	printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+	
+	const answerOfLord3Question3 = overlord3.getAnswer(randomOverlordIdentityQuestion.id, references)
+	printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+	
+	questionsAndAnswers.push({
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo: 0,
+		answer: answerOfLord1Question3.getPronunciation()
+	},
+	{
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo:1,
+		answer: answerOfLord2Question3.getPronunciation()
+	},
+	{
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo:2,
+		answer: answerOfLord3Question3.getPronunciation()
+	});
+		/**
+	<li>Tee, Eff, Arr</li>
+	<li>Tee, Arr, Eff</li>
+	<li>Eff, Tee, Arr</li>
+	<li>Eff, Arr, Tee</li>
+	<li>Arr, Tee, Eff</li>
+	<li>Arr, Eff, Tee</li>
+		*/
+	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
+		//If the  first and second answers are the same
 		
-		printFunction(answerComparisonQuestion.question);
+		if (anwerOfLord1Question1.getPronunciation()=='Ozo'){
+			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
+			} else { //If the second and third answers are not the same
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfArr);
+				overlord3.giveIdol(idolOfEff);
+			}
+		} else {
 		
-		const answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord2Question2)
-		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-		
-		const answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord2Question2)
-		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-		
-		const answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, anwerOfLord1Question1, anwerOfLord2Question2)
-		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-		
-		questionsAndAnswers.push({
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo: 0,
-			answer: answerOfLord1Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:1,
-			answer: answerOfLord2Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:2,
-			answer: answerOfLord3Question3.getPronunciation()
-		});
-
-		//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
-		/*
-		runFortyPercentSolution(
-			{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3}, 
-			{overlord1, overlord2, overlord3}, 
-			{idolOfTee, idolOfEff, idolOfArr}
-		);*/
-		
-			
-		if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-			//If the  first and second answers are the same
-			
 			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
 				overlord1.giveIdol(idolOfEff);
 				overlord2.giveIdol(idolOfTee);
 				overlord3.giveIdol(idolOfArr);
-			} else if (anwerOfLord2Question2.getPronunciation() != answerOfLord3Question3.getPronunciation()) { //If the second and third answers are not the same
+			} else { //If the second and third answers are not the same
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfArr);
+				overlord3.giveIdol(idolOfTee);
+			}
+		}
+		
+		
+	} else if (anwerOfLord1Question1.getPronunciation() != anwerOfLord2Question2.getPronunciation()){ //If the first and second answers are not the same
+			
+				
+		if (anwerOfLord1Question1.getPronunciation()=='Ozo'){
+			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
 				overlord1.giveIdol(idolOfArr);
 				overlord2.giveIdol(idolOfTee);
 				overlord3.giveIdol(idolOfEff);
-			}
-		} else if (anwerOfLord1Question1.getPronunciation() != anwerOfLord2Question2.getPronunciation()){ //If the first and second answers are not the same
-			
+			} else { //If the second and third answers are not the same
 				overlord1.giveIdol(idolOfArr);
 				overlord2.giveIdol(idolOfEff);
 				overlord3.giveIdol(idolOfTee);
-			
-
+			}
+		} else {
+		
+			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
+			} else { //If the second and third answers are not the same
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfArr);
+				overlord3.giveIdol(idolOfTee);
+			}
 		}
+	}
+};
+
+const presentIdols = ([overlord1, overlord2, overlord3]) => {
+	
+}
+
+const getSolution1 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) =>{
+	printFunction(obviousQuestion.question);
+	
+	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
+	printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
+
+
+	
+	questionsAndAnswers.push({
+		question: obviousQuestion,
+		orderNumber: 0,
+		addressedTo:0,
+		answer: anwerOfLord1Question1.getPronunciation()
+	});
+
+	printFunction(referenceQuestion.question);
+	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {wordReference1: anwerOfLord1Question1});
+	printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
+
+	questionsAndAnswers.push({
+		question: referenceQuestion,
+		orderNumber: 1,
+		addressedTo: 1,
+		answer: anwerOfLord2Question2.getPronunciation()
+	});
+	
+	printFunction(answerComparisonQuestion.question);
+	
+	const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
+	
+	const answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
+	printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+	
+	const answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
+	printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+	
+	const answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
+	printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+	
+	questionsAndAnswers.push({
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo: 0,
+		answer: answerOfLord1Question3.getPronunciation()
+	},
+	{
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo:1,
+		answer: answerOfLord2Question3.getPronunciation()
+	},
+	{
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo:2,
+		answer: answerOfLord3Question3.getPronunciation()
+	});
+
+	//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
+	/*
+	runFortyPercentSolution(
+		{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3}, 
+		{overlord1, overlord2, overlord3}, 
+		{idolOfTee, idolOfEff, idolOfArr}
+	);*/
+	
+		
+	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
+		//If the  first and second answers are the same
+		
+		if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
+			overlord1.giveIdol(idolOfEff);
+			overlord2.giveIdol(idolOfTee);
+			overlord3.giveIdol(idolOfArr);
+		} else if (anwerOfLord2Question2.getPronunciation() != answerOfLord3Question3.getPronunciation()) { //If the second and third answers are not the same
+			overlord1.giveIdol(idolOfArr);
+			overlord2.giveIdol(idolOfTee);
+			overlord3.giveIdol(idolOfEff);
+		}
+	} else if (anwerOfLord1Question1.getPronunciation() != anwerOfLord2Question2.getPronunciation()){ //If the first and second answers are not the same
+		
+			overlord1.giveIdol(idolOfArr);
+			overlord2.giveIdol(idolOfEff);
+			overlord3.giveIdol(idolOfTee);
+		
 
 	}
+
+}
 
 /**
 * This solution yields a 40% success rate.
@@ -453,6 +600,9 @@ So this adds up to 8 (like a binary number of three bits). If I do not know whic
 </ol>
 <li>Since there are 8 combinations of receiving answers to the three questions and only six combinations for the order that the overlords could appear in, <b>this riddle is probably not impossible to solve.</b> It might be possible to find questions that can receive answers that can be mapped to a specific order of the overlords.</li>
 <li>If I do not know which word stands for 'yes' and 'no', I have only four combinations of answers. Therefore, it is imperative that I must find the meanings of the word "ulu" and "ozo" with my questions.</li>
+<li>My code addresses the third question to <b>each</b> overlord. This is not cheating if my code only uses one of the three answers to deduce which overlord to give which idol. This is a feature used in-development to speed up information gathering.</li>
+<li>I need to create a program that can analyze the logs of my solution programs. I must create a program that can analyze which answers map to which configuration of overlords, for example: "ozo, ozo, ulu" => Tee, Eff, Arr. If my program finds that one string of answers map to more than one configuration of overlords, then my questions are faulty and I need to improve them.</li>
+<li>It turns out that console.log in a web browser is quite slow. Do not call it too many times successively.</li>
 <br><br>
 <button id="run-button">Run</button>
 <button id="run-many-times-button">Run many times</button>
