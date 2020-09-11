@@ -355,58 +355,53 @@ const getSolution2 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, 
 	<li>Arr, Tee, Eff</li>
 	<li>Arr, Eff, Tee</li>
 		*/
-	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-		//If the  first and second answers are the same
-		
-		if (anwerOfLord1Question1.getPronunciation()=='Ozo'){
-			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
+	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
+	
+		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
+			} else {
 				overlord1.giveIdol(idolOfTee);
 				overlord2.giveIdol(idolOfEff);
 				overlord3.giveIdol(idolOfArr);
-			} else { //If the second and third answers are not the same
+			}
+		} else {
+		
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfArr);
+				overlord3.giveIdol(idolOfTee);
+			} else {
 				overlord1.giveIdol(idolOfTee);
 				overlord2.giveIdol(idolOfArr);
 				overlord3.giveIdol(idolOfEff);
 			}
-		} else {
-		
-			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfTee);
-				overlord3.giveIdol(idolOfArr);
-			} else { //If the second and third answers are not the same
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfArr);
-				overlord3.giveIdol(idolOfTee);
-			}
 		}
 		
-		
-	} else if (anwerOfLord1Question1.getPronunciation() != anwerOfLord2Question2.getPronunciation()){ //If the first and second answers are not the same
-			
-				
-		if (anwerOfLord1Question1.getPronunciation()=='Ozo'){
-			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
-				overlord1.giveIdol(idolOfArr);
-				overlord2.giveIdol(idolOfTee);
-				overlord3.giveIdol(idolOfEff);
-			} else { //If the second and third answers are not the same
+	} else {
+		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				overlord1.giveIdol(idolOfArr);
 				overlord2.giveIdol(idolOfEff);
 				overlord3.giveIdol(idolOfTee);
+			} else {
+				overlord1.giveIdol(idolOfArr);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfEff);
 			}
 		} else {
-		
-			if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfTee);
-				overlord3.giveIdol(idolOfArr);
-			} else { //If the second and third answers are not the same
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				overlord1.giveIdol(idolOfEff);
 				overlord2.giveIdol(idolOfArr);
 				overlord3.giveIdol(idolOfTee);
+			} else {
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
 			}
-		}
+		}	
 	}
 };
 
