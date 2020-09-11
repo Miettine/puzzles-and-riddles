@@ -13,11 +13,12 @@ $(document).ready(function(){
 	
     runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
 	
+	console.log(log);
+	console.log(statistics);
+	
 	const t1 = performance.now();
 
 	setTimer($('#timer'), t1 - t0);
-	
-	console.log(log);
   });
   $("#run-many-times-button").click(() => {
 	
@@ -30,16 +31,19 @@ $(document).ready(function(){
 	const wonGames = log.filter(game => game.victory).map(game => game.victory).length;
 	$('#solution-log').html(`games: ${log.length}, won: ${wonGames}, ${(wonGames/log.length)*100}%`);
 	
-	const t1 = performance.now();
-
-	setTimer($('#timer'), t1 - t0);
-	
 	console.log(log);
+	console.log(statistics);
+	
+	const t1 = performance.now();
+	
+	setTimer($('#timer'), t1 - t0);
   });
 });
 
+let statistics = new Map();
+
 const setTimer = (timerElement, time) => {
-	$('#timer').html(`The program took ${time} milliseconds to run.<br>`);
+	timerElement.html(`The program took ${time} milliseconds to run.<br>`);
 }
 
 class Word {
@@ -269,6 +273,18 @@ const runSolution = (printFunction = ()=>{}) => {
 	
 	log.push(gameLog);
 	
+	const answers = [];
+	
+	answers.push(questionsAndAnswers[0].answer, questionsAndAnswers[1].answer, questionsAndAnswers[questionsAndAnswers.length-1].answer);
+	
+	const answersString = answers.join();
+	const overlordsNames = gameLog.overlords.map(o => o.getName());
+	if (statistics.has(answersString)){
+		statistics.get(answersString).push(overlordsNames);
+	} else {
+		statistics.set(answersString, [overlordsNames]);
+	}
+	
 	gameId++;
 
 	printFunction('Program finished.');
@@ -393,10 +409,6 @@ const getSolution2 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, 
 		}
 	}
 };
-
-const presentIdols = ([overlord1, overlord2, overlord3]) => {
-	
-}
 
 const getSolution1 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) =>{
 	printFunction(obviousQuestion.question);
