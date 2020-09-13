@@ -263,7 +263,7 @@ const runSolution = (printFunction = ()=>{}) => {
 		wordForfalse
 	}
 		
-	getSolution1([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction);
+	getSolution1({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction});
 	
 	printFunction(overlord1.getOpinion());
 	printFunction(overlord2.getOpinion());
@@ -290,122 +290,7 @@ const runSolution = (printFunction = ()=>{}) => {
 	printFunction('Program finished.');
 }
 
-const getSolution2 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) => {
-	printFunction(obviousQuestion.question);
-	
-	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
-	printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
-
-
-	
-	questionsAndAnswers.push({
-		question: obviousQuestion,
-		orderNumber: 0,
-		addressedTo:0,
-		answer: anwerOfLord1Question1.getPronunciation()
-	});
-
-	printFunction(referenceQuestion.question);
-	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {wordReference1: anwerOfLord1Question1});
-	printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
-
-	questionsAndAnswers.push({
-		question: referenceQuestion,
-		orderNumber: 1,
-		addressedTo: 1,
-		answer: anwerOfLord2Question2.getPronunciation()
-	});
-	
-	printFunction(randomOverlordIdentityQuestion.question);
-	
-	const references = {overlordReference: overlord1};
-	
-	const answerOfLord1Question3 = overlord1.getAnswer(randomOverlordIdentityQuestion.id, references)
-	printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-	
-	const answerOfLord2Question3 = overlord2.getAnswer(randomOverlordIdentityQuestion.id, references)
-	printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-	
-	const answerOfLord3Question3 = overlord3.getAnswer(randomOverlordIdentityQuestion.id, references)
-	printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-	
-	questionsAndAnswers.push({
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo: 0,
-		answer: answerOfLord1Question3.getPronunciation()
-	},
-	{
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo:1,
-		answer: answerOfLord2Question3.getPronunciation()
-	},
-	{
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo:2,
-		answer: answerOfLord3Question3.getPronunciation()
-	});
-		/**
-	1 Tee, Eff, Arr
-	2 Tee, Arr, Eff
-	3 Eff, Tee, Arr
-	4 Eff, Arr, Tee
-	5 Arr, Tee, Eff
-	6 Arr, Eff, Tee
-		*/
-	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
-	
-		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
-			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfTee);
-				overlord3.giveIdol(idolOfArr);
-			} else {
-				overlord1.giveIdol(idolOfTee);
-				overlord2.giveIdol(idolOfEff);
-				overlord3.giveIdol(idolOfArr);
-			}
-		} else {
-		
-			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfArr);
-				overlord3.giveIdol(idolOfTee);
-			} else {
-				overlord1.giveIdol(idolOfTee);
-				overlord2.giveIdol(idolOfArr);
-				overlord3.giveIdol(idolOfEff);
-			}
-		}
-		
-	} else {
-		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
-			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
-				overlord1.giveIdol(idolOfArr);
-				overlord2.giveIdol(idolOfEff);
-				overlord3.giveIdol(idolOfTee);
-			} else {
-				overlord1.giveIdol(idolOfArr);
-				overlord2.giveIdol(idolOfTee);
-				overlord3.giveIdol(idolOfEff);
-			}
-		} else {
-			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfArr);
-				overlord3.giveIdol(idolOfTee);
-			} else {
-				overlord1.giveIdol(idolOfEff);
-				overlord2.giveIdol(idolOfTee);
-				overlord3.giveIdol(idolOfArr);
-			}
-		}	
-	}
-};
-
-const getSolution1 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction) =>{
+const getSolution1 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction}) =>{
 	printFunction(obviousQuestion.question);
 	
 	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
