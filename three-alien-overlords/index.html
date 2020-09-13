@@ -24,7 +24,7 @@ $(document).ready(function(){
 	
 	const t0 = performance.now();
   
-	for (let i = 0; i<1000; i++){
+	for (let i = 0; i<10000; i++){
 		runSolution();
 	}
 	
@@ -213,7 +213,7 @@ const obviousQuestion = {
 
 const referenceQuestion = {
 	id: 1,
-	question: 'Was the answer to the first question a yes?',
+	question: 'Was the answer to the last question a yes?',
 	description: "Ask an overlord information on another's answer."
 }
 
@@ -263,7 +263,7 @@ const runSolution = (printFunction = ()=>{}) => {
 		wordForfalse
 	}
 		
-	getSolution2([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction);
+	getSolution1([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, idolOfArr}, questionsAndAnswers, printFunction);
 	
 	printFunction(overlord1.getOpinion());
 	printFunction(overlord2.getOpinion());
@@ -348,12 +348,12 @@ const getSolution2 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, 
 		answer: answerOfLord3Question3.getPronunciation()
 	});
 		/**
-	<li>Tee, Eff, Arr</li>
-	<li>Tee, Arr, Eff</li>
-	<li>Eff, Tee, Arr</li>
-	<li>Eff, Arr, Tee</li>
-	<li>Arr, Tee, Eff</li>
-	<li>Arr, Eff, Tee</li>
+	1 Tee, Eff, Arr
+	2 Tee, Arr, Eff
+	3 Eff, Tee, Arr
+	4 Eff, Arr, Tee
+	5 Arr, Tee, Eff
+	6 Arr, Eff, Tee
 		*/
 	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
 	
@@ -430,90 +430,163 @@ const getSolution1 = ([overlord1, overlord2, overlord3], {idolOfTee, idolOfEff, 
 		addressedTo: 1,
 		answer: anwerOfLord2Question2.getPronunciation()
 	});
+	let answerOfLord1Question3;
+	let answerOfLord2Question3;
+	let answerOfLord3Question3;
 	
-	printFunction(answerComparisonQuestion.question);
-	
-	const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
-	
-	const answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
-	printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-	
-	const answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
-	printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-	
-	const answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
-	printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-	
-	questionsAndAnswers.push({
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo: 0,
-		answer: answerOfLord1Question3.getPronunciation()
-	},
-	{
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo:1,
-		answer: answerOfLord2Question3.getPronunciation()
-	},
-	{
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo:2,
-		answer: answerOfLord3Question3.getPronunciation()
-	});
-
-	//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
-	/*
-	runFortyPercentSolution(
-		{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3}, 
-		{overlord1, overlord2, overlord3}, 
-		{idolOfTee, idolOfEff, idolOfArr}
-	);*/
-	
-		
 	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-		//If the  first and second answers are the same
 		
-		if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
-			overlord1.giveIdol(idolOfEff);
-			overlord2.giveIdol(idolOfTee);
-			overlord3.giveIdol(idolOfArr);
-		} else if (anwerOfLord2Question2.getPronunciation() != answerOfLord3Question3.getPronunciation()) { //If the second and third answers are not the same
-			overlord1.giveIdol(idolOfArr);
-			overlord2.giveIdol(idolOfTee);
-			overlord3.giveIdol(idolOfEff);
-		}
-	} else if (anwerOfLord1Question1.getPronunciation() != anwerOfLord2Question2.getPronunciation()){ //If the first and second answers are not the same
+		printFunction(answerComparisonQuestion.question);
 		
-			overlord1.giveIdol(idolOfArr);
-			overlord2.giveIdol(idolOfEff);
-			overlord3.giveIdol(idolOfTee);
+		const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
 		
-
+		answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
+		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+		
+		answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
+		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+		
+		answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
+		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+		questionsAndAnswers.push({
+			question: answerComparisonQuestion,
+			orderNumber: 2,
+			addressedTo: 0,
+			answer: answerOfLord1Question3.getPronunciation()
+		},
+		{
+			question: answerComparisonQuestion,
+			orderNumber: 2,
+			addressedTo:1,
+			answer: answerOfLord2Question3.getPronunciation()
+		},
+		{
+			question: answerComparisonQuestion,
+			orderNumber: 2,
+			addressedTo:2,
+			answer: answerOfLord3Question3.getPronunciation()
+		});
+	} else {
+	
+		printFunction(referenceQuestion.question);
+		
+		const references = {wordReference1: anwerOfLord2Question2};
+		
+		answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
+		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+		
+		answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
+		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+		
+		answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
+		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+		
+		questionsAndAnswers.push({
+			question: answerComparisonQuestion,
+			orderNumber: 2,
+			addressedTo: 0,
+			answer: answerOfLord1Question3.getPronunciation()
+		},
+		{
+			question: answerComparisonQuestion,
+			orderNumber: 2,
+			addressedTo:1,
+			answer: answerOfLord2Question3.getPronunciation()
+		},
+		{
+			question: answerComparisonQuestion,
+			orderNumber: 2,
+			addressedTo:2,
+			answer: answerOfLord3Question3.getPronunciation()
+		});
 	}
-
+	
+	//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
+	
+	runFortyPercentSolution(
+		{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, 
+		overlord1, overlord2, overlord3, 
+		idolOfTee, idolOfEff, idolOfArr}
+	);
 }
 
 /**
-* This solution yields a 40% success rate.
+* This solution yields a 46% success rate.
 */
-const runFortyPercentSolution = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr}) => {
+const runFortyPercentSolution = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr}) => {
+	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
+	
+		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				presentIdols(2, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			} else {
+				presentIdols(4, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			}
+		} else {
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				presentIdols(1, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			} else {
+				presentIdols(0, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			}
+		}
+		
+	} else {
+		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				presentIdols(5, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			} else {
+				presentIdols(1, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			}
+		} else {
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				presentIdols(4, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			} else {
+				presentIdols(3, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+			}
+		}	
+	}
+}
 
-	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-		if (anwerOfLord2Question2.getPronunciation() == answerOfLord3Question3.getPronunciation()){
+/**
+0 Tee, Eff, Arr
+1 Tee, Arr, Eff
+2 Eff, Tee, Arr
+3 Eff, Arr, Tee
+4 Arr, Tee, Eff
+5 Arr, Eff, Tee
+*/
+const presentIdols = (presentationId, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr}) => {
+	switch (presentationId){
+		case 0:
+			overlord1.giveIdol(idolOfTee);
+			overlord2.giveIdol(idolOfEff);
+			overlord3.giveIdol(idolOfArr);
+			break;
+		case 1:
+			overlord1.giveIdol(idolOfTee);
+			overlord2.giveIdol(idolOfArr);
+			overlord3.giveIdol(idolOfEff);
+			break;
+		case 2:
 			overlord1.giveIdol(idolOfEff);
 			overlord2.giveIdol(idolOfTee);
 			overlord3.giveIdol(idolOfArr);
-		} else { //If the second and third answers are not the same
+			break;
+		case 3:
+			overlord1.giveIdol(idolOfEff);
+			overlord2.giveIdol(idolOfArr);
+			overlord3.giveIdol(idolOfTee);
+			break;
+		case 4:
 			overlord1.giveIdol(idolOfArr);
 			overlord2.giveIdol(idolOfTee);
 			overlord3.giveIdol(idolOfEff);
-		}
-	} else {
-		overlord1.giveIdol(idolOfTee);
-		overlord2.giveIdol(idolOfEff);
-		overlord3.giveIdol(idolOfArr);
+			break;
+		case 5:
+			overlord1.giveIdol(idolOfArr);
+			overlord2.giveIdol(idolOfEff);
+			overlord3.giveIdol(idolOfTee);
+			break;
 	}
 }
 
@@ -562,9 +635,8 @@ function shuffle(array) {
 <p><a>Source of this riddle is on youtube video <i>Can you solve the three gods riddle? - Alex Gendler</i> (link omitted to avoid spoilers and temptation to look up the solution)</a><a>. I am writing this program to help me solve the riddle without looking at the solution.</a></p>
 <image src="overlords-img-1.jpg">
 <p>Created by logician Raymond Smullyan, and popularized by his colleague George Boolos, this riddle has been called the hardest logic puzzle ever.</p>
-
-<p>You and your team have crash-landed on an ancient planet. The only way off is to appease its three alien overlords: Tee, Eff and Arr by giving them the correct artifacts.</p>
 <image src="overlords-img-2.jpg">
+<p>You and your team have crash-landed on an ancient planet. The only way off is to appease its three alien overlords: Tee, Eff and Arr by giving them the correct artifacts.</p>
 <image src="overlords-img-3.jpg">
 <image src="overlords-img-4.jpg">
 <p>Unfortunately, you don't know who is who.</p>
