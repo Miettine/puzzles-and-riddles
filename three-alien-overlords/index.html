@@ -24,18 +24,34 @@ class Logger {
 		return this.#log.filter(game => game.victory).map(game => game.victory).length;
 	}
 	
-	
 	getLog(){
 		return this.#log;
 	}
 	
 	getAnswersToOverlordsMap(){
-		if (statistics.has(answersString)){
-			statistics.get(answersString).push(overlordsNames);
-		} else {
-			statistics.set(answersString, [overlordsNames]);
-		}
-	
+		const statistics = new Map();
+		
+		this.#log.forEach(gameLog => {
+			const answers = [gameLog.questionsAndAnswers[0].answer, gameLog.questionsAndAnswers[1].answer, gameLog.questionsAndAnswers[gameLog.questionsAndAnswers.length-1].answer];
+			
+			const answersString = answers.join();
+			
+			const overlordsNames = gameLog.overlords.map(o => o.getName()).join();
+			
+			if (statistics.has(answersString)){
+				const answers = statistics.get(answersString);
+				const entry = answers.find(answer => answer.overlordsNames == overlordsNames);
+				
+				if (entry){
+					entry.count++;
+				}
+			} else {
+				statistics.set(answersString, [{overlordsNames: overlordsNames, count: 1}]);
+			}
+		
+		});
+		
+		return statistics;
 	}
 }
 
@@ -55,6 +71,7 @@ $(document).ready(function(){
 		runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
 
 		console.log(logger.getLog());
+		console.log(logger.getAnswersToOverlordsMap());
 
 		const t1 = performance.now();
 
@@ -74,6 +91,7 @@ $(document).ready(function(){
 		$('#solution-log').html(`games: ${numberOfGames}, won: ${numberOfWonGames}, ${(numberOfWonGames/numberOfGames)*100}%`);
 
 		console.log(logger.getLog());
+		console.log(logger.getAnswersToOverlordsMap());
 
 		const t1 = performance.now();
 
@@ -308,13 +326,6 @@ const runSolution = (printFunction = ()=>{}) => {
 	gameLog.victory = overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
 	
 	logger.addLog(gameLog);
-	
-	const answers = [];
-	
-	answers.push(questionsAndAnswers[0].answer, questionsAndAnswers[1].answer, questionsAndAnswers[questionsAndAnswers.length-1].answer);
-	
-	const answersString = answers.join();
-	const overlordsNames = gameLog.overlords.map(o => o.getName()).join();
 
 	printFunction('Program finished.');
 }
