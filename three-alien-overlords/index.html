@@ -44,9 +44,11 @@ class Logger {
 				
 				if (entry){
 					entry.count++;
+				} else {
+					answers.push({"overlordsNames": overlordsNames, count: 1});
 				}
 			} else {
-				statistics.set(answersString, [{overlordsNames: overlordsNames, count: 1}]);
+				statistics.set(answersString, [{"overlordsNames": overlordsNames, count: 1}]);
 			}
 		
 		});
