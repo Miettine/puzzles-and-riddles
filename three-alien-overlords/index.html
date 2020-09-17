@@ -52,8 +52,8 @@ class Logger {
 			}
 		
 		});
-		
-		return statistics;
+
+		return new Map([...statistics.entries()].sort()); //Sorting the keys so that they will always appear in a specific order.
 	}
 }
 
@@ -72,7 +72,7 @@ $(document).ready(function(){
 
 		runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
 
-		console.log(logger.getLog());
+		//console.log(logger.getLog());
 		console.log(logger.getAnswersToOverlordsMap());
 
 		const t1 = performance.now();
@@ -92,8 +92,21 @@ $(document).ready(function(){
 
 		$('#solution-log').html(`games: ${numberOfGames}, won: ${numberOfWonGames}, ${(numberOfWonGames/numberOfGames)*100}%`);
 
-		console.log(logger.getLog());
-		console.log(logger.getAnswersToOverlordsMap());
+		//console.log(logger.getLog());
+		const map = logger.getAnswersToOverlordsMap();
+		
+		/**
+	<li>ozo, ozo, ozo</li>
+	<li>ozo, ozo, ulu</li>
+	<li>ozo, ulu, ozo</li>
+	<li>ozo, ulu, ulu</li>
+	<li>ulu, ozo, ozo</li>
+	<li>ulu, ozo, ulu</li>
+	<li>ulu, ulu, ozo</li>
+	<li>ulu, ulu, ulu</li>
+*/
+
+		console.log(map);
 
 		const t1 = performance.now();
 
