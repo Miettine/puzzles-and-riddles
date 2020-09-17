@@ -374,73 +374,38 @@ const getSolution1 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, id
 	let answerOfLord2Question3;
 	let answerOfLord3Question3;
 	
-	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-		
-		printFunction(answerComparisonQuestion.question);
-		
-		const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
-		
-		answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-		
-		answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-		
-		answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-		questionsAndAnswers.push({
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo: 0,
-			answer: answerOfLord1Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:1,
-			answer: answerOfLord2Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:2,
-			answer: answerOfLord3Question3.getPronunciation()
-		});
-	} else {
+	printFunction(referenceQuestion.question);
 	
-		printFunction(referenceQuestion.question);
-		
-		const references = {wordReference1: anwerOfLord2Question2};
-		
-		answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-		
-		answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-		
-		answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-		
-		questionsAndAnswers.push({
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo: 0,
-			answer: answerOfLord1Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:1,
-			answer: answerOfLord2Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:2,
-			answer: answerOfLord3Question3.getPronunciation()
-		});
-	}
+	const references = {wordReference1: anwerOfLord2Question2};
 	
+	answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
+	printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+	
+	answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
+	printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+	
+	answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
+	printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+	
+	questionsAndAnswers.push({
+		question: referenceQuestion,
+		orderNumber: 2,
+		addressedTo: 0,
+		answer: answerOfLord1Question3.getPronunciation()
+	},
+	{
+		question: referenceQuestion,
+		orderNumber: 2,
+		addressedTo:1,
+		answer: answerOfLord2Question3.getPronunciation()
+	},
+	{
+		question: referenceQuestion,
+		orderNumber: 2,
+		addressedTo:2,
+		answer: answerOfLord3Question3.getPronunciation()
+	});
+
 	//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
 	
 	runFortyPercentSolution(
