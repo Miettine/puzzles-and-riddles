@@ -1,46 +1,85 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
 <script>
 
-$(document).ready(function(){
-  $("#run-button").click(() => {
-	const t0 = performance.now();
-	const solutionLogElement = $('#solution-log');
+class Logger {
 	
-	solutionLogElement.text('');
-	$('#analysis').text('');
+	#gameId = 0;
+	#log = [];
 	
-	//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
-	
-    runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
-	
-	console.log(log);
-	console.log(statistics);
-	
-	const t1 = performance.now();
-
-	setTimer($('#timer'), t1 - t0);
-  });
-  $("#run-many-times-button").click(() => {
-	
-	const t0 = performance.now();
-  
-	for (let i = 0; i<10000; i++){
-		runSolution();
+	constructor() {
+		
+	}
+	addLog(gameLogObject){
+		gameLogObject.id = this.#gameId;
+		this.#log.push(gameLogObject);
+		this.#gameId ++;
 	}
 	
-	const wonGames = log.filter(game => game.victory).map(game => game.victory).length;
-	$('#solution-log').html(`games: ${log.length}, won: ${wonGames}, ${(wonGames/log.length)*100}%`);
+	getNumberOfGames(){
+		return this.#log.length;
+	}
 	
-	console.log(log);
-	console.log(statistics);
+	getNumberOfWonGames(){
+		return this.#log.filter(game => game.victory).map(game => game.victory).length;
+	}
 	
-	const t1 = performance.now();
 	
-	setTimer($('#timer'), t1 - t0);
-  });
-});
+	getLog(){
+		return this.#log;
+	}
+	
+	getAnswersToOverlordsMap(){
+		if (statistics.has(answersString)){
+			statistics.get(answersString).push(overlordsNames);
+		} else {
+			statistics.set(answersString, [overlordsNames]);
+		}
+	
+	}
+}
 
-let statistics = new Map();
+const logger = new Logger();
+
+$(document).ready(function(){
+
+	$("#run-button").click(() => {
+		const t0 = performance.now();
+		const solutionLogElement = $('#solution-log');
+
+		solutionLogElement.text('');
+		$('#analysis').text('');
+
+		//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
+
+		runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
+
+		console.log(logger.getLog());
+
+		const t1 = performance.now();
+
+		setTimer($('#timer'), t1 - t0);
+	});
+	$("#run-many-times-button").click(() => {
+
+		const t0 = performance.now();
+
+		for (let i = 0; i<10000; i++){
+			runSolution();
+		}
+
+		const numberOfGames = logger.getNumberOfGames();
+		const numberOfWonGames = logger.getNumberOfWonGames();
+
+		$('#solution-log').html(`games: ${numberOfGames}, won: ${numberOfWonGames}, ${(numberOfWonGames/numberOfGames)*100}%`);
+
+		console.log(logger.getLog());
+
+		const t1 = performance.now();
+
+		setTimer($('#timer'), t1 - t0);
+	});
+});
 
 const setTimer = (timerElement, time) => {
 	timerElement.html(`The program took ${time} milliseconds to run.<br>`);
@@ -230,10 +269,6 @@ const randomOverlordIdentityQuestion = {
 	description: 'Used to determine the identity of the randomly answering one.'
 }
 
-const log = [];
-
-let gameId = 0;
-
 const runSolution = (printFunction = ()=>{}) => {
 
 	printFunction('Starting program..');
@@ -256,14 +291,15 @@ const runSolution = (printFunction = ()=>{}) => {
 	const questionsAndAnswers = [];
 
 	const gameLog = {
-		id: gameId,
 		questionsAndAnswers,
 		overlords,
 		wordForTrue,
 		wordForfalse
 	}
-		
+	
 	getSolution1({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction});
+	
+	printFunction('<br><p>Idols presented. What is your verdict, o\' Overlords?..</p><br><br><br><br><br>');
 	
 	printFunction(overlord1.getOpinion());
 	printFunction(overlord2.getOpinion());
@@ -271,21 +307,14 @@ const runSolution = (printFunction = ()=>{}) => {
 	
 	gameLog.victory = overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
 	
-	log.push(gameLog);
+	logger.addLog(gameLog);
 	
 	const answers = [];
 	
 	answers.push(questionsAndAnswers[0].answer, questionsAndAnswers[1].answer, questionsAndAnswers[questionsAndAnswers.length-1].answer);
 	
 	const answersString = answers.join();
-	const overlordsNames = gameLog.overlords.map(o => o.getName());
-	if (statistics.has(answersString)){
-		statistics.get(answersString).push(overlordsNames);
-	} else {
-		statistics.set(answersString, [overlordsNames]);
-	}
-	
-	gameId++;
+	const overlordsNames = gameLog.overlords.map(o => o.getName()).join();
 
 	printFunction('Program finished.');
 }
