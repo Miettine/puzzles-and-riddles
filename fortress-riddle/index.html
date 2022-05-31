@@ -61,14 +61,26 @@ const asessWallSegmentValidity = (wallLength) => {
 	const moduloTwenty = wallLength % 20;
 	if (moduloTwenty == 0) {
 		return getInvalidWallSegmentResultObject(wallLength/20, 0, 0);
+	} else {
+		const moduloNine = moduloTwenty % 9;
+		
+		if (moduloNine == 0) {
+			return getInvalidWallSegmentResultObject(Math.floor(wallLength/20), moduloTwenty/9, 0);
+		} else {
+			const moduloSix = moduloNine % 6;
+			
+			if (moduloSix == 0) {
+				return getInvalidWallSegmentResultObject(Math.floor(wallLength/20), Math.floor(moduloNine/9), moduloNine/6);
+			}
+		}
 	}
 	
-	console.log(wallLength + " " + moduloTwenty);
 	
 	const moduloNine = wallLength % 9;
 	if (moduloNine == 0) {
 		return getInvalidWallSegmentResultObject(0, wallLength/9, 0);
 	}
+	
 	const moduloSix = wallLength % 6;
 	if (moduloSix == 0) {
 		return getInvalidWallSegmentResultObject(0, 0, wallLength/6);
