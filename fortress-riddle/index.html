@@ -25,15 +25,28 @@ const getSolutionMessage = () =>{
 
 const runSolution = (solutionTextHtmlElement) => {
 
-	solutionTextHtmlElement.append('Starting program..<br>');
+	solutionTextHtmlElement.append('Starting program..<br><br>');
 	const t0 = performance.now();
 	console.log("yes?");
 	for (let wallLength = 1000; wallLength >= 1; wallLength--) {
-		console.log(wallLength);
-		if (wallLength % 20 == 0) {
-			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is not valid.<br>`);
+		const wallSegmentValidity = asessWallSegmentValidity(wallLength);
+		if (wallSegmentValidity.isValid) {
+			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>
+			<br>`);
+			
 		} else {
-			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>`);
+			solutionTextHtmlElement.append(`Wall segment length of <b>${wallLength} is not valid</b>.<br>`);
+			if (wallSegmentValidity.divisionsByTwenty > 0){
+				solutionTextHtmlElement.append(`Divisible by twenty ${wallSegmentValidity.divisionsByTwenty} times.<br>`);
+			}
+			if (wallSegmentValidity.divisionsByNine > 0){
+				solutionTextHtmlElement.append(`Divisible by nine ${wallSegmentValidity.divisionsByNine} times.<br>`);
+			}
+			if (wallSegmentValidity.divisionsBySix > 0){
+				solutionTextHtmlElement.append(`Divisible by six ${wallSegmentValidity.divisionsBySix} times.<br>`);
+			}
+			
+			solutionTextHtmlElement.append(`<br>`);
 		}
 	}
 	
@@ -43,6 +56,34 @@ const runSolution = (solutionTextHtmlElement) => {
 	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run.<br>`);
 	solutionTextHtmlElement.append('<br>');
 	solutionTextHtmlElement.append('Program finished.');
+}
+
+const asessWallSegmentValidity = (wallLength) => {
+	if (wallLength % 20 == 0) {
+		return getInvalidWallSegmentResultObject(wallLength/20, 0, 0);
+	}
+	if (wallLength % 9 == 0) {
+		return getInvalidWallSegmentResultObject(0, wallLength/9, 0);
+	}
+	if (wallLength % 6 == 0) {
+		return getInvalidWallSegmentResultObject(0, 0, wallLength/6);
+	}
+	return getValidWallSegmentResultObject();
+}
+
+const getInvalidWallSegmentResultObject = (divisionsByTwenty, divisionsByNine, divisionsBySix) => {
+	return {
+		isValid: false,
+		divisionsByTwenty: divisionsByTwenty,
+		divisionsByNine: divisionsByNine,
+		divisionsBySix: divisionsBySix
+	};
+}
+
+const getValidWallSegmentResultObject = () => {
+	return {
+		isValid: true
+	};
 }
 
 </script>
