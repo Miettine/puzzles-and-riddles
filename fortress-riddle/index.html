@@ -33,7 +33,6 @@ const runSolution = (solutionTextHtmlElement) => {
 		if (wallSegmentValidity.isValid) {
 			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>
 			<br>`);
-			
 		} else {
 			solutionTextHtmlElement.append(`Wall segment length of <b>${wallLength} is not valid</b>.<br>`);
 			if (wallSegmentValidity.divisionsByTwenty > 0){
@@ -59,13 +58,19 @@ const runSolution = (solutionTextHtmlElement) => {
 }
 
 const asessWallSegmentValidity = (wallLength) => {
-	if (wallLength % 20 == 0) {
+	const moduloTwenty = wallLength % 20;
+	if (moduloTwenty == 0) {
 		return getInvalidWallSegmentResultObject(wallLength/20, 0, 0);
 	}
-	if (wallLength % 9 == 0) {
+	
+	console.log(wallLength + " " + moduloTwenty);
+	
+	const moduloNine = wallLength % 9;
+	if (moduloNine == 0) {
 		return getInvalidWallSegmentResultObject(0, wallLength/9, 0);
 	}
-	if (wallLength % 6 == 0) {
+	const moduloSix = wallLength % 6;
+	if (moduloSix == 0) {
 		return getInvalidWallSegmentResultObject(0, 0, wallLength/6);
 	}
 	return getValidWallSegmentResultObject();
