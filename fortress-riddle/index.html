@@ -1,0 +1,88 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+  $("#run-button").click(() => {
+	const solutionLogElement = $('#solution-log');
+	
+	//Need to clear the text in case the user clicks on the button multiple times during one session.
+	solutionLogElement.text('');
+	$('#analysis').text('');
+	
+	$('#note-text').html('<b>(notes)</b>');
+	
+    runSolution(solutionLogElement);
+	
+	$('#analysis').html(`<h2>Conclusion</h2>
+	<p>...</p>`);
+	
+  });
+});
+const getSolutionMessage = () =>{
+	
+	return "message";
+}
+
+const runSolution = (solutionTextHtmlElement) => {
+
+	solutionTextHtmlElement.append('Starting program..<br>');
+	const t0 = performance.now();
+	console.log("yes?");
+	for (let wallLength = 1000; wallLength >= 1; wallLength--) {
+		console.log(wallLength);
+		if (wallLength % 20 == 0) {
+			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is not valid.<br>`);
+		} else {
+			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>`);
+		}
+	}
+	
+	const t1 = performance.now();
+	solutionTextHtmlElement.append('See thorough logging in the browser console.');
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run.<br>`);
+	solutionTextHtmlElement.append('<br>');
+	solutionTextHtmlElement.append('Program finished.');
+}
+
+</script>
+
+<body>
+
+<h1>Fortress Riddle</h1>
+<h2>Introduction</h2>
+<a>Source of this riddle is on</a> <a href="https://www.youtube.com/watch?v=s5CLtBaRIwY">this youtube video</a><a>. I created this program to solve the riddle without looking at the solution.</a>
+<br>
+<h2>The Riddle</h2>
+<p>...</p>
+<ol>
+	<li>1.</li>
+	<li>2.</li>
+	<li>3.</li>
+	<li>4.</li>
+</ol>
+<br>
+<h2>Solution</h2>
+<p>(paragraph)/p>
+<li>(note 1)</li>
+<li>(note 2)</li>
+<li>(note 3)</li>
+<li>(note 4)</li>
+<li>(note 5)</li>
+<h2>Deductions</h2>
+<p>Here are deductions that helped me reach the solution</p>
+<li>1.</li>
+<li>2.</li>
+<li>3.</li>
+<p>Press the button below to run the code that solves the riddle. The solution is ran on your browser. The code was made with emphasis on performance and design.</p>
+<button id="run-button">Solve riddle</button>
+
+<br>
+<p id="note-text"></p>
+<br>
+<p id="solution-log"></p>
+<br>
+<br>
+<p id="analysis"></p>
+
+</body>
