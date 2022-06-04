@@ -75,17 +75,34 @@ const asessWallSegmentValidity = (wallLength) => {
 		return getInvalidWallSegmentResultObject(0, 0, wallLength/6);
 	}
 	
+	for (let numberOfTwentySegments = Math.floor(wallLength / 20); numberOfTwentySegments >= 1; numberOfTwentySegments--) {
+	
+		const remainingWallWithoutTwenties = wallLength - numberOfTwentySegments * 20;
+		
+		for (let numberOfNineSegments = Math.floor(remainingWallWithoutTwenties / 9); numberOfNineSegments >= 1; numberOfNineSegments--) {
+		
+			const remainingWall = remainingWallWithoutTwenties - numberOfNineSegments * 9
+		
+			console.log("wallLength " + wallLength + 
+			"; numberOfTwentySegments " + numberOfTwentySegments + 
+			"; numberOfNineSegments " + numberOfNineSegments + 
+			"; remainingWall "+ remainingWall);
+			if (remainingWall % 6 == 0){
+				return getInvalidWallSegmentResultObject(numberOfTwentySegments, numberOfNineSegments, remainingWall/6);
+			}
+		}
+	}
+	
 	for (let numberOfNineSegments = Math.floor(wallLength / 9); numberOfNineSegments >= 1; numberOfNineSegments--) {
 	
 		const remainingWall = wallLength - numberOfNineSegments * 9
 	
-		console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments
-		+ "; remainingWall "+ remainingWall);
+		//console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments
+		//+ "; remainingWall "+ remainingWall);
 		if (remainingWall % 6 == 0){
 			return getInvalidWallSegmentResultObject(0, numberOfNineSegments, remainingWall/6);
 		}
 	}
-
 	
 	return getValidWallSegmentResultObject();
 }
