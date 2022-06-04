@@ -28,7 +28,7 @@ const runSolution = (solutionTextHtmlElement) => {
 	solutionTextHtmlElement.append('Starting program..<br><br>');
 	const t0 = performance.now();
 	console.log("yes?");
-	for (let wallLength = 30; wallLength >= 1; wallLength--) {
+	for (let wallLength = 1000; wallLength >= 1; wallLength--) {
 		const wallSegmentValidity = asessWallSegmentValidity(wallLength);
 		if (wallSegmentValidity.isValid) {
 			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>
@@ -76,9 +76,13 @@ const asessWallSegmentValidity = (wallLength) => {
 	}
 	
 	for (let numberOfNineSegments = Math.floor(wallLength / 9); numberOfNineSegments >= 1; numberOfNineSegments--) {
-		console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments);
-		if (moduloNine % 6 == 0){
-			return getInvalidWallSegmentResultObject(0, numberOfNineSegments, moduloNine/6);
+	
+		const remainingWall = wallLength - numberOfNineSegments * 9
+	
+		console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments
+		+ "; remainingWall "+ remainingWall);
+		if (remainingWall % 6 == 0){
+			return getInvalidWallSegmentResultObject(0, numberOfNineSegments, remainingWall/6);
 		}
 	}
 
