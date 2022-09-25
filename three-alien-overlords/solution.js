@@ -48,6 +48,8 @@ $(document).ready(function(){
 		setTimer($('#timer'), t1 - t0);
 	});
 	$("#run-many-times-button").click(() => {
+		logger.clear();
+
 		const t0 = performance.now();
 
 		/*
@@ -67,9 +69,9 @@ $(document).ready(function(){
 		const numberOfWonGames = logger.getNumberOfWonGames();
 
 		$("#solution-log").html(
-			`games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${
-			(numberOfWonGames / numberOfGames) * 100
-			}%`
+			`The mapping is: ${mapping} <br>
+			<br>
+			games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${(numberOfWonGames / numberOfGames) * 100}%`
 		);
 
 		const map = logger.getAnswersToOverlordsMap();

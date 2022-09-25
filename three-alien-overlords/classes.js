@@ -24,6 +24,11 @@ class Logger {
 		return this.#log;
 	}
 	
+	
+	clear(){
+		return this.#log = [];
+	}
+
 	getAnswersToOverlordsMap(){
 		const statistics = new Map();
 		
