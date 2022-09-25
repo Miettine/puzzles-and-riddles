@@ -68,7 +68,11 @@ class Word {
 	getPronunciation() {
 		return this.pronunciation;
 	}
-	
+
+	getEnglishTranslation() {
+		return this.meaning == true ? "Yes" : "No";
+	}
+
 	getMeaning() {
 		return this.meaning;
 	}
@@ -145,7 +149,7 @@ class TruthfulOverlord extends Overlord {
 		const {wordReference1, wordReference2, overlordReference } = references || {};
 		
 		if (id == obviousQuestion.id){
-			return this.getFalseAnswer();
+			return this.getTrueAnswer();
 			
 		} else if (id == referenceQuestion.id){
 		

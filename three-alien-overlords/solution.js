@@ -378,7 +378,7 @@ const getFortySixPercentSolution = (
 	printFunction(obviousQuestion.question);
 
 	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
-	printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
+	printFunction(`Overlord 1 (${overlord1.getName()}): ${anwerOfLord1Question1.getPronunciation()} (${anwerOfLord1Question1.getEnglishTranslation()})`);
 
 	questionsAndAnswers.push({
 	question: obviousQuestion,
@@ -391,7 +391,7 @@ const getFortySixPercentSolution = (
 	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {
 		wordReference1: anwerOfLord1Question1,
 	});
-	printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
+	printFunction(`Overlord 2 (${overlord2.getName()}): ${anwerOfLord2Question2.getPronunciation()} (${anwerOfLord2Question2.getEnglishTranslation()})`);
 
 	questionsAndAnswers.push({
 		question: referenceQuestion,
@@ -410,13 +410,13 @@ const getFortySixPercentSolution = (
 		const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
 
 		answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+		printFunction(`Overlord 1 (${overlord1.getName()}): ${answerOfLord1Question3.getPronunciation()} (${answerOfLord1Question3.getEnglishTranslation()})`);
 
 		answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+		printFunction(`Overlord 2 (${overlord2.getName()}): ${answerOfLord2Question3.getPronunciation()} (${answerOfLord2Question3.getEnglishTranslation()})`);
 
 		answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+		printFunction(`Overlord 3 (${overlord3.getName()}): ${answerOfLord3Question3.getPronunciation()} (${answerOfLord3Question3.getEnglishTranslation()})`);
 		questionsAndAnswers.push({
 			question: answerComparisonQuestion,
 			orderNumber: 2,
@@ -441,13 +441,13 @@ const getFortySixPercentSolution = (
 		const references = {wordReference1: anwerOfLord2Question2};
 
 		answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
+		printFunction(`Overlord 1 (${overlord1.getName()}): ${answerOfLord1Question3.getPronunciation()} (${answerOfLord1Question3.getEnglishTranslation()})`);
 
 		answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
+		printFunction(`Overlord 2 (${overlord2.getName()}): ${answerOfLord2Question3.getPronunciation()} (${answerOfLord2Question3.getEnglishTranslation()})`);
 
 		answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
+		printFunction(`Overlord 3 (${overlord3.getName()}): ${answerOfLord3Question3.getPronunciation()} (${answerOfLord3Question3.getEnglishTranslation()})`);
 
 		questionsAndAnswers.push({
 			question: answerComparisonQuestion,
