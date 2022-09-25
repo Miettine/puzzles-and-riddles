@@ -1,165 +1,216 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script>
+  $(document).ready(function () {
+    $("#run-button").click(() => {
+      const solutionLogElement = $("#solution-log");
 
-$(document).ready(function(){
-  $("#run-button").click(() => {
-	const solutionLogElement = $('#solution-log');
-	
-	//Need to clear the text in case the user clicks on the button multiple times during one session.
-	solutionLogElement.text('');
-	$('#analysis').text('');
-	
-	$('#note-text').html('<b>(notes)</b>');
-	
-    runSolution(solutionLogElement);
-	
-	$('#analysis').html(`<h2>Conclusion</h2>
+      //Need to clear the text in case the user clicks on the button multiple times during one session.
+      solutionLogElement.text("");
+      $("#analysis").text("");
+
+      $("#note-text").html("<b>(notes)</b>");
+
+      runSolution(solutionLogElement);
+
+      $("#analysis").html(`<h2>Conclusion</h2>
 	<p>...</p>`);
-	
+    });
   });
-});
-const getSolutionMessage = () =>{
-	
-	return "message";
-}
+  const getSolutionMessage = () => {
+    return "message";
+  };
 
-const runSolution = (solutionTextHtmlElement) => {
-
-	solutionTextHtmlElement.append('Starting program..<br><br>');
-	const t0 = performance.now();
-	console.log("yes?");
-	for (let wallLength = 1000; wallLength >= 1; wallLength--) {
-		const wallSegmentValidity = asessWallSegmentValidity(wallLength);
-		if (wallSegmentValidity.isValid) {
-			solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>
+  const runSolution = (solutionTextHtmlElement) => {
+    solutionTextHtmlElement.append("Starting program..<br><br>");
+    const t0 = performance.now();
+    console.log("yes?");
+    for (let wallLength = 1000; wallLength >= 1; wallLength--) {
+      const wallSegmentValidity = asessWallSegmentValidity(wallLength);
+      if (wallSegmentValidity.isValid) {
+        solutionTextHtmlElement.append(`Wall segment length of ${wallLength} is valid.<br>
 			<br>`);
-		} else {
-			solutionTextHtmlElement.append(`Wall segment length of <b>${wallLength} is not valid</b>.<br>`);
-			if (wallSegmentValidity.divisionsByTwenty > 0){
-				solutionTextHtmlElement.append(`Divisible by twenty ${wallSegmentValidity.divisionsByTwenty} times.<br>`);
-			}
-			if (wallSegmentValidity.divisionsByNine > 0){
-				solutionTextHtmlElement.append(`Divisible by nine ${wallSegmentValidity.divisionsByNine} times.<br>`);
-			}
-			if (wallSegmentValidity.divisionsBySix > 0){
-				solutionTextHtmlElement.append(`Divisible by six ${wallSegmentValidity.divisionsBySix} times.<br>`);
-			}
-			
-			solutionTextHtmlElement.append(`<br>`);
-		}
-	}
-	
-	const t1 = performance.now();
-	solutionTextHtmlElement.append('See thorough logging in the browser console.');
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append(`The program took ${t1 - t0} milliseconds to run.<br>`);
-	solutionTextHtmlElement.append('<br>');
-	solutionTextHtmlElement.append('Program finished.');
-}
+      } else {
+        solutionTextHtmlElement.append(
+          `Wall segment length of <b>${wallLength} is not valid</b>.<br>`
+        );
+        solutionTextHtmlElement.append(`Reached by adding together: `);
+        if (wallSegmentValidity.divisionsByTwenty > 0) {
+          solutionTextHtmlElement.append(
+            `the number twenty ${wallSegmentValidity.divisionsByTwenty} times,<br>`
+          );
+        }
+        if (wallSegmentValidity.divisionsByNine > 0) {
+          solutionTextHtmlElement.append(
+            `the number nine ${wallSegmentValidity.divisionsByNine} times,<br>`
+          );
+        }
+        if (wallSegmentValidity.divisionsBySix > 0) {
+          solutionTextHtmlElement.append(
+            `the number six ${wallSegmentValidity.divisionsBySix} times,<br>`
+          );
+        }
 
-const asessWallSegmentValidity = (wallLength) => {
-	console.log();
-		
-	const moduloTwenty = wallLength % 20;
-	if (moduloTwenty == 0) {
-		return getInvalidWallSegmentResultObject(wallLength/20, 0, 0);
-	}
-	
-	const moduloNine = wallLength % 9;
-	if (moduloNine == 0) {
-		return getInvalidWallSegmentResultObject(0, wallLength/9, 0);
-	}
-	
-	const moduloSix = wallLength % 6;
-	if (moduloSix == 0) {
-		return getInvalidWallSegmentResultObject(0, 0, wallLength/6);
-	}
-	
-	for (let numberOfTwentySegments = Math.floor(wallLength / 20); numberOfTwentySegments >= 1; numberOfTwentySegments--) {
-	
-		const remainingWallWithoutTwenties = wallLength - numberOfTwentySegments * 20;
-		
-		for (let numberOfNineSegments = Math.floor(remainingWallWithoutTwenties / 9); numberOfNineSegments >= 1; numberOfNineSegments--) {
-		
-			const remainingWall = remainingWallWithoutTwenties - numberOfNineSegments * 9
-		
-			console.log("wallLength " + wallLength + 
-			"; numberOfTwentySegments " + numberOfTwentySegments + 
-			"; numberOfNineSegments " + numberOfNineSegments + 
-			"; remainingWall "+ remainingWall);
-			if (remainingWall % 6 == 0){
-				return getInvalidWallSegmentResultObject(numberOfTwentySegments, numberOfNineSegments, remainingWall/6);
-			}
-		}
-	}
-	
-	for (let numberOfNineSegments = Math.floor(wallLength / 9); numberOfNineSegments >= 1; numberOfNineSegments--) {
-	
-		const remainingWall = wallLength - numberOfNineSegments * 9
-	
-		//console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments
-		//+ "; remainingWall "+ remainingWall);
-		if (remainingWall % 6 == 0){
-			return getInvalidWallSegmentResultObject(0, numberOfNineSegments, remainingWall/6);
-		}
-	}
-	
-	return getValidWallSegmentResultObject();
-}
+        if (
+          wallSegmentValidity.divisionsByTwenty * 20 +
+            wallSegmentValidity.divisionsByNine * 9 +
+            wallSegmentValidity.divisionsBySix * 6 !=
+          wallLength
+        ) {
+          const message = "An error occurred. The numbers don't add up.";
+          solutionTextHtmlElement.append(
+            `<span style=\"color:red\">${message}</span>`
+          );
+          throw message;
+        }
 
-const getInvalidWallSegmentResultObject = (divisionsByTwenty, divisionsByNine, divisionsBySix) => {
-	return {
-		isValid: false,
-		divisionsByTwenty: divisionsByTwenty,
-		divisionsByNine: divisionsByNine,
-		divisionsBySix: divisionsBySix
-	};
-}
+        solutionTextHtmlElement.append(`<br>`);
+      }
+    }
 
-const getValidWallSegmentResultObject = () => {
-	return {
-		isValid: true
-	};
-}
+    const t1 = performance.now();
+    solutionTextHtmlElement.append(
+      "See thorough logging in the browser console."
+    );
+    solutionTextHtmlElement.append("<br>");
+    solutionTextHtmlElement.append(
+      `The program took ${t1 - t0} milliseconds to run.<br>`
+    );
+    solutionTextHtmlElement.append("<br>");
+    solutionTextHtmlElement.append("Program finished.");
+  };
 
+  const asessWallSegmentValidity = (wallLength) => {
+    console.log();
+
+    const moduloTwenty = wallLength % 20;
+    if (moduloTwenty == 0) {
+      return getInvalidWallSegmentResultObject(wallLength / 20, 0, 0);
+    }
+
+    const moduloNine = wallLength % 9;
+    if (moduloNine == 0) {
+      return getInvalidWallSegmentResultObject(0, wallLength / 9, 0);
+    }
+
+    const moduloSix = wallLength % 6;
+    if (moduloSix == 0) {
+      return getInvalidWallSegmentResultObject(0, 0, wallLength / 6);
+    }
+
+    for (
+      let numberOfTwentySegments = Math.floor(wallLength / 20);
+      numberOfTwentySegments >= 1;
+      numberOfTwentySegments--
+    ) {
+      const remainingWallWithoutTwenties =
+        wallLength - numberOfTwentySegments * 20;
+
+      for (
+        let numberOfNineSegments = Math.floor(remainingWallWithoutTwenties / 9);
+        numberOfNineSegments >= 1;
+        numberOfNineSegments--
+      ) {
+        const remainingWall =
+          remainingWallWithoutTwenties - numberOfNineSegments * 9;
+
+        console.log(
+          "wallLength " +
+            wallLength +
+            "; numberOfTwentySegments " +
+            numberOfTwentySegments +
+            "; numberOfNineSegments " +
+            numberOfNineSegments +
+            "; remainingWall " +
+            remainingWall
+        );
+        if (remainingWall % 6 == 0) {
+          return getInvalidWallSegmentResultObject(
+            numberOfTwentySegments,
+            numberOfNineSegments,
+            remainingWall / 6
+          );
+        }
+      }
+    }
+
+    for (
+      let numberOfNineSegments = Math.floor(wallLength / 9);
+      numberOfNineSegments >= 1;
+      numberOfNineSegments--
+    ) {
+      const remainingWall = wallLength - numberOfNineSegments * 9;
+
+      //console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments
+      //+ "; remainingWall "+ remainingWall);
+      if (remainingWall % 6 == 0) {
+        return getInvalidWallSegmentResultObject(
+          0,
+          numberOfNineSegments,
+          remainingWall / 6
+        );
+      }
+    }
+
+    return getValidWallSegmentResultObject();
+  };
+
+  const getInvalidWallSegmentResultObject = (
+    divisionsByTwenty,
+    divisionsByNine,
+    divisionsBySix
+  ) => {
+    return {
+      isValid: false,
+      divisionsByTwenty: divisionsByTwenty,
+      divisionsByNine: divisionsByNine,
+      divisionsBySix: divisionsBySix,
+    };
+  };
+
+  const getValidWallSegmentResultObject = () => {
+    return {
+      isValid: true,
+    };
+  };
 </script>
 
 <body>
+  <h1>Fortress Riddle</h1>
+  <h2>Introduction</h2>
+  <a>Source of this riddle is on</a>
+  <a href="https://www.youtube.com/watch?v=s5CLtBaRIwY">this youtube video</a
+  ><a
+    >. I created this program to solve the riddle without looking at the
+    solution.</a
+  >
+  <br />
+  <h2>Deductions</h2>
+  <p>Here are deductions that helped me reach the solution</p>
+  <li>
+    It might be possible to deduce a simple answer to this riddle. I don't want
+    that. I want to create a program that brute-forces every single correct and
+    incorrect answer. This is not the most efficient way to solve this riddle
+    but I will do this also as a programming challenge.
+  </li>
+  <li>
+    I can catch false positives by counting together the divisions by 20, 9 and
+    6 for each wall segment. However, I absolutely have no way of deducing false
+    negatives. The only way to avoid false negatives is to design the code
+    carefully, consider and test all possible cases.
+  </li>
+  <li>3.</li>
+  <p>
+    Press the button below to run the code that solves the riddle. The solution
+    is ran on your browser. The code was made with emphasis on performance and
+    design.
+  </p>
+  <button id="run-button">Solve riddle</button>
 
-<h1>Fortress Riddle</h1>
-<h2>Introduction</h2>
-<a>Source of this riddle is on</a> <a href="https://www.youtube.com/watch?v=s5CLtBaRIwY">this youtube video</a><a>. I created this program to solve the riddle without looking at the solution.</a>
-<br>
-<h2>The Riddle</h2>
-<p>...</p>
-<ol>
-	<li>1.</li>
-	<li>2.</li>
-	<li>3.</li>
-	<li>4.</li>
-</ol>
-<br>
-<h2>Solution</h2>
-<p>(paragraph)/p>
-<li>(note 1)</li>
-<li>(note 2)</li>
-<li>(note 3)</li>
-<li>(note 4)</li>
-<li>(note 5)</li>
-<h2>Deductions</h2>
-<p>Here are deductions that helped me reach the solution</p>
-<li>It might be possible to deduce a simple answer to this riddle. I don't want that. I want to create  a program that brute-forces every single correct and incorrect answer. This is not the most efficient way to solve this riddle but I will do this also as a programming challenge.</li>
-<li>I can catch false positives by counting together the divisions by 20, 9 and 6 for each wall segment. However, I absolutely have no way of deducing false negatives. The only way to avoid false negatives is to design the code carefully, consider and test all possible cases.</li>
-<li>3.</li>
-<p>Press the button below to run the code that solves the riddle. The solution is ran on your browser. The code was made with emphasis on performance and design.</p>
-<button id="run-button">Solve riddle</button>
-
-<br>
-<p id="note-text"></p>
-<br>
-<p id="solution-log"></p>
-<br>
-<br>
-<p id="analysis"></p>
-
+  <br />
+  <p id="note-text"></p>
+  <br />
+  <p id="solution-log"></p>
+  <br />
+  <br />
+  <p id="analysis"></p>
 </body>

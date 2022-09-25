@@ -118,7 +118,7 @@ const runSolution = (printFunction = ()=>{}) => {
 		wordForfalse
 	}
 	
-	getSolution1({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction});
+	getSolution2({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction});
 	
 	printFunction('<br><p>Idols presented. What is your verdict, o\' Overlords?..</p><br><br><br><br><br>');
 	
@@ -184,91 +184,14 @@ const getSolution2 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, id
 		answer: answerOfLord3Question3.getPronunciation()
 	});
 	
-	runFortyPercentSolution(
+	presentIdolsBasedOnAnswers(
 		{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, 
 		overlord1, overlord2, overlord3, 
 		idolOfTee, idolOfEff, idolOfArr}
 	);
 }
 
-const getSolution1 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction}) =>{
-	printFunction(obviousQuestion.question);
-	
-	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
-	printFunction(`Overlord 1: ${anwerOfLord1Question1.getPronunciation()}`);
-
-
-	
-	questionsAndAnswers.push({
-		question: obviousQuestion,
-		orderNumber: 0,
-		addressedTo:0,
-		answer: anwerOfLord1Question1.getPronunciation()
-	});
-
-	printFunction(referenceQuestion.question);
-	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {wordReference1: anwerOfLord1Question1});
-	printFunction(`Overlord 2: ${anwerOfLord2Question2.getPronunciation()}`);
-
-	questionsAndAnswers.push({
-		question: referenceQuestion,
-		orderNumber: 1,
-		addressedTo: 1,
-		answer: anwerOfLord2Question2.getPronunciation()
-	});
-	let answerOfLord1Question3;
-	let answerOfLord2Question3;
-	let answerOfLord3Question3;
-	/*
-	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-		printFunction(randomOverlordIdentityQuestion.question);
-				
-		answerOfLord1Question3 = overlord1.getAnswer(randomOverlordIdentityQuestion.id, {overlordReference: overlord1})
-		printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-		
-		answerOfLord2Question3 = overlord2.getAnswer(randomOverlordIdentityQuestion.id, {overlordReference: overlord1})
-		printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-		
-		answerOfLord3Question3 = overlord3.getAnswer(randomOverlordIdentityQuestion.id, {overlordReference: overlord1});
-		printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-	} else {
-*/
-	printFunction(referenceQuestion.question);
-	
-	const references = {wordReference1: anwerOfLord2Question2};
-	
-	answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
-	printFunction(`Overlord 1: ${answerOfLord1Question3.getPronunciation()}`);
-	
-	answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
-	printFunction(`Overlord 2: ${answerOfLord2Question3.getPronunciation()}`);
-	
-	answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
-	printFunction(`Overlord 3: ${answerOfLord3Question3.getPronunciation()}`);
-		
-	
-	
-	//}
-	
-	questionsAndAnswers.push({
-		question: referenceQuestion,
-		orderNumber: 2,
-		addressedTo:2,
-		answer: answerOfLord3Question3.getPronunciation()
-	});
-	//runOneThirdSolution({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr});
-	
-	runFortyPercentSolution(
-		{anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, 
-		overlord1, overlord2, overlord3, 
-		idolOfTee, idolOfEff, idolOfArr}
-	);
-}
-
-/**
-* This solution yields a 46% success rate.
-*/
-const runFortyPercentSolution = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr}) => {
+const presentIdolsBasedOnAnswers = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr}) => {
 	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
 	
 		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
@@ -277,15 +200,15 @@ const runFortyPercentSolution = ({anwerOfLord1Question1, anwerOfLord2Question2, 
 				presentIdols(2, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			} else {
 				//Ozo,Ozo,Ulu
-				presentIdols(4, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				presentIdols(1, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			}
 		} else {
 			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				//Ozo,Ulu,Ozo
-				presentIdols(1, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				presentIdols(0, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			} else {
 				//Ozo,Ulu,Ulu
-				presentIdols(0, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				presentIdols(5, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			}
 		}
 		
@@ -296,14 +219,15 @@ const runFortyPercentSolution = ({anwerOfLord1Question1, anwerOfLord2Question2, 
 				presentIdols(5, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			} else {
 				//Ulu,Ozo,Ulu
-				presentIdols(1, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				presentIdols(0, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			}
 		} else {
 			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				//Ulu,Ulu,Ozo
-				presentIdols(4, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				presentIdols(1, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			} else {
-				presentIdols(3, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				//Ulu,Ulu,Ulu
+				presentIdols(2, {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
 			}
 		}	
 	}
@@ -350,21 +274,6 @@ const presentIdols = (presentationId, {overlord1, overlord2, overlord3, idolOfTe
 			overlord3.giveIdol(idolOfTee);
 			break;
 	}
-}
-
-/**
-* This solution yields a 33% success rate.
-*/
-const runOneThirdSolution = ({anwerOfLord1Question1, anwerOfLord2Question2}, {overlord1, overlord2, overlord3}, {idolOfTee, idolOfEff, idolOfArr}) => {
-
-	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
-		overlord1.giveIdol(idolOfEff);
-		overlord2.giveIdol(idolOfTee);
-	} else {
-		overlord1.giveIdol(idolOfTee);
-		overlord2.giveIdol(idolOfEff);
-	}
-	overlord3.giveIdol(idolOfArr);
 }
 
 function shuffle(array) {
