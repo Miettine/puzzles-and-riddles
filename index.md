@@ -7,18 +7,12 @@ A repository for solving code puzzles, challenges and riddles. Created by Lauri 
 
 ## Projects
 
+- System requirements: a modern web browser (code uses ES6 features)
+
 [Fortress Riddle](fortress-riddle)
 
-- Work in progress
-
-- System requirements: a modern web browser (code uses ES6 features)
-
 [Sea Monster Riddle](sea-monster-riddle)
-
-- System requirements: a modern web browser (code uses ES6 features)
 
 [Three Alien Overlords](three-alien-overlords)
 
 - Work in progress
-
-- System requirements: a modern web browser (code uses ES6 features)

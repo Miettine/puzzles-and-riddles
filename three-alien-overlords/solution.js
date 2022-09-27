@@ -30,140 +30,25 @@ const randomOverlordIdentityQuestion = {
 $(document).ready(function(){
 
 	$("#run-button").click(() => {
-		const t0 = performance.now();
-		const solutionLogElement = $('#solution-log');
-
-		solutionLogElement.text('');
-		$('#analysis').text('');
-
-		//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
-
-		runSolution( logText => solutionLogElement.append(`${logText} <br><br>`) );
-
-		//console.log(logger.getLog());
-		console.log(logger.getAnswersToOverlordsMap());
-
-		const t1 = performance.now();
-
-		setTimer($('#timer'), t1 - t0);
+		playOneRound(strategy2, [2, 1, 0, 5, 5, 0, 1, 2]);
 	});
 	$("#run-best-button").click(() => {
-		const t0 = performance.now();
-		const solutionLogElement = $("#solution-log");
-
-		solutionLogElement.text("");
-		$("#analysis").text("");
-
-		//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
-
-		runFortySixPercentSolution(getBestSolutionMapping(), (logText) =>
-		solutionLogElement.append(`${logText} <br><br>`)
-		);
-
-		//console.log(logger.getLog());
-		console.log(logger.getAnswersToOverlordsMap());
-
-		const t1 = performance.now();
-
-		setTimer($("#timer"), t1 - t0);
+		playOneRound(fortySixPercentStrategy, getBestSolutionMapping());
     });
 	$("#run-many-times-button").click(() => {
-		logger.clear();
-
-		const t0 = performance.now();
-
 		/*
 		Here are interesting mappings that I have found:
 		[1,3,4,2,4,1,5,0] : 0% winrate. Always loses. Why and how it can always lose is worthy of investigating
 		[2, 1, 0, 5, 5, 0, 1, 2] default mapping that I have determined. About 33% winrate
 		*/
-		const mapping = getRandomizedMapping();
-
-		console.log("The mapping is: " + mapping);
-
-		for (let i = 0; i < 10000; i++) {
-			runSolutionWithMapping(mapping);
-		}
-
-		const numberOfGames = logger.getNumberOfGames();
-		const numberOfWonGames = logger.getNumberOfWonGames();
-
-		$("#solution-log").html(
-			`The mapping is: ${mapping} <br>
-			<br>
-			games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${(numberOfWonGames / numberOfGames) * 100}%`
-		);
-
-		const map = logger.getAnswersToOverlordsMap();
-
-		console.log(map);
-
-		const t1 = performance.now();
-
-		setTimer($("#timer"), t1 - t0);
+		playManyRounds(strategy2, getRandomizedMapping());
 	});
 
 	$("#run-best-solution-button").click(() => {
-		logger.clear();
-
-		const t0 = performance.now();
-
-		const mapping = getBestSolutionMapping();
-
-		console.log("The mapping is: " + mapping);
-
-		for (let i = 0; i < 10000; i++) {
-			runFortySixPercentSolution(mapping);
-		}
-
-		const numberOfGames = logger.getNumberOfGames();
-		const numberOfWonGames = logger.getNumberOfWonGames();
-
-		$("#solution-log").html(
-			`The mapping is: ${mapping} <br>
-			<br>
-			games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${(numberOfWonGames / numberOfGames) * 100}%`
-		);
-
-		const map = logger.getAnswersToOverlordsMap();
-
-		console.log(map);
-
-		const t1 = performance.now();
-
-		setTimer($("#timer"), t1 - t0);
+		playManyRounds(fortySixPercentStrategy, getBestSolutionMapping());
 	});
 	$("#run-best-solution-with-random-mapping-button").click(() => {
-		logger.clear();
-
-		const t0 = performance.now();
-
-		const mapping = getRandomizedMapping();
-
-		console.log("The mapping is: " + mapping);
-
-		for (let i = 0; i < 10000; i++) {
-			runFortySixPercentSolution(mapping);
-		}
-
-		const numberOfGames = logger.getNumberOfGames();
-		const numberOfWonGames = logger.getNumberOfWonGames();
-
-		$("#solution-log").html(
-		`The mapping is: ${mapping} <br>
-			<br>
-			games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${
-			(numberOfWonGames / numberOfGames) * 100
-		}%`
-		);
-
-		const map = logger.getAnswersToOverlordsMap();
-
-		console.log(map);
-
-		const t1 = performance.now();
-
-		setTimer($("#timer"), t1 - t0);
+		playManyRounds(fortySixPercentStrategy, getRandomizedMapping());
     });
 });
 
@@ -173,6 +58,53 @@ const setTimer = (timerElement, time) => {
 	timerElement.html(`The program took ${time} milliseconds to run.<br>`);
 }
 
+function playManyRounds(strategyFunction, mapping) {
+	logger.clear();
+
+	const t0 = performance.now();
+
+	console.log("The mapping is: " + mapping);
+
+	for (let i = 0; i < 10000; i++) {
+		strategyFunction(mapping);
+	}
+
+	const numberOfGames = logger.getNumberOfGames();
+	const numberOfWonGames = logger.getNumberOfWonGames();
+
+	$("#solution-log").html(
+		`The mapping is: ${mapping} <br>
+			<br>
+			games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${(numberOfWonGames / numberOfGames) * 100}%`
+	);
+
+	const map = logger.getAnswersToOverlordsMap();
+
+	console.log(map);
+
+	const t1 = performance.now();
+
+	setTimer($("#timer"), t1 - t0);
+}
+
+function playOneRound(solutionFunction, mapping) {
+	const t0 = performance.now();
+	const solutionLogElement = $('#solution-log');
+
+	solutionLogElement.text('');
+	$('#analysis').text('');
+
+	//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
+	solutionFunction(mapping, (logText) => solutionLogElement.append(`${logText} <br><br>`));
+
+	//console.log(logger.getLog());
+	console.log(logger.getAnswersToOverlordsMap());
+
+	const t1 = performance.now();
+
+	setTimer($('#timer'), t1 - t0);
+}
+
 /**
  * Return random integer. Zero included, max excluded.
  */
@@ -180,67 +112,15 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const runSolution = (printFunction = ()=>{}) => {
-	runSolutionWithMapping([2, 1, 0, 5, 5, 0, 1, 2], printFunction);
-}
-
-const runFortySixPercentSolution = (mapping = [2, 4, 1, 0, 5, 1, 4, 3], printFunction = () => {}) => {
-	printFunction("Starting program..");
-
-	const wordPronunciations = shuffle(["Ozo", "Ulu"]);
-
-	const wordForTrue = new Word(wordPronunciations[0], true);
-	const wordForfalse = new Word(wordPronunciations[1], false);
-
-	const overlords = shuffle([
-		new TruthfulOverlord(0, "Tee", wordForTrue, wordForfalse),
-		new LyingOverlord(1, "Eff", wordForTrue, wordForfalse),
-		new RandomOverlord(2, "Arr", wordForTrue, wordForfalse),
-	]);
-
-	const idolOfTee = new Idol(0, "Idol of Tee");
-	const idolOfEff = new Idol(1, "Idol of Eff");
-	const idolOfArr = new Idol(2, "Idol of Arr");
-
-	const [overlord1, overlord2, overlord3] = overlords;
-
-	const questionsAndAnswers = [];
-
-	const gameLog = {
-	questionsAndAnswers,
-	overlords,
-	wordForTrue,
-	wordForfalse,
-	};
-
-	getFortySixPercentSolution({
-		overlord1,
-		overlord2,
-		overlord3,
-		idolOfTee,
-		idolOfEff,
-		idolOfArr,
-		questionsAndAnswers,
-		printFunction,
-	}, mapping);
-
-	printFunction(
-	"<br><p>Idols presented. What is your verdict, o' Overlords?..</p><br><br><br><br><br>"
-	);
-
-	printFunction(overlord1.getOpinion());
-	printFunction(overlord2.getOpinion());
-	printFunction(overlord3.getOpinion());
-
-	gameLog.victory =
-	overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
-
-	logger.addLog(gameLog);
-
-	printFunction("Program finished.");
+const strategy2 = (mapping, printFunction = () => {}) => {
+  runSolutionWithFunction(getSolution2, mapping, printFunction);
 };
 
-const runSolutionWithMapping = (mapping, printFunction = () => {}) => {
+const fortySixPercentStrategy = (mapping, printFunction = () => {}, ) => {
+	runSolutionWithFunction(getFortySixPercentSolution, mapping, printFunction);
+};
+
+const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () => {}) => {
 	printFunction("Starting program..");
 
 	const wordPronunciations = shuffle(["Ozo", "Ulu"]);
@@ -269,7 +149,7 @@ const runSolutionWithMapping = (mapping, printFunction = () => {}) => {
 	wordForfalse,
 	};
 
-	getSolution2(
+	solutionFunction(
     {
       overlord1,
       overlord2,
@@ -378,7 +258,7 @@ const getFortySixPercentSolution = (
 	printFunction(obviousQuestion.question);
 
 	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
-	printFunction(`Overlord 1 (${overlord1.getName()}): ${anwerOfLord1Question1.getPronunciation()} (${anwerOfLord1Question1.getEnglishTranslation()})`);
+	printFunction(getOverlordDebugAnswer(1, overlord1, anwerOfLord1Question1));
 
 	questionsAndAnswers.push({
 	question: obviousQuestion,
@@ -391,7 +271,7 @@ const getFortySixPercentSolution = (
 	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {
 		wordReference1: anwerOfLord1Question1,
 	});
-	printFunction(`Overlord 2 (${overlord2.getName()}): ${anwerOfLord2Question2.getPronunciation()} (${anwerOfLord2Question2.getEnglishTranslation()})`);
+	printFunction(getOverlordDebugAnswer(2, overlord2, anwerOfLord2Question2));
 
 	questionsAndAnswers.push({
 		question: referenceQuestion,
@@ -410,13 +290,13 @@ const getFortySixPercentSolution = (
 		const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
 
 		answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 1 (${overlord1.getName()}): ${answerOfLord1Question3.getPronunciation()} (${answerOfLord1Question3.getEnglishTranslation()})`);
+		printFunction(getOverlordDebugAnswer(1, overlord1, answerOfLord1Question3));
 
 		answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 2 (${overlord2.getName()}): ${answerOfLord2Question3.getPronunciation()} (${answerOfLord2Question3.getEnglishTranslation()})`);
+		printFunction(getOverlordDebugAnswer(2, overlord2, answerOfLord2Question3));
 
 		answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(`Overlord 3 (${overlord3.getName()}): ${answerOfLord3Question3.getPronunciation()} (${answerOfLord3Question3.getEnglishTranslation()})`);
+		printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
 		questionsAndAnswers.push({
 			question: answerComparisonQuestion,
 			orderNumber: 2,
@@ -441,13 +321,13 @@ const getFortySixPercentSolution = (
 		const references = {wordReference1: anwerOfLord2Question2};
 
 		answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 1 (${overlord1.getName()}): ${answerOfLord1Question3.getPronunciation()} (${answerOfLord1Question3.getEnglishTranslation()})`);
+		printFunction(getOverlordDebugAnswer(1, overlord1, answerOfLord1Question3));
 
 		answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 2 (${overlord2.getName()}): ${answerOfLord2Question3.getPronunciation()} (${answerOfLord2Question3.getEnglishTranslation()})`);
+		printFunction(getOverlordDebugAnswer(2, overlord2, answerOfLord2Question3));
 
 		answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
-		printFunction(`Overlord 3 (${overlord3.getName()}): ${answerOfLord3Question3.getPronunciation()} (${answerOfLord3Question3.getEnglishTranslation()})`);
+		printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
 
 		questionsAndAnswers.push({
 			question: answerComparisonQuestion,
@@ -589,6 +469,10 @@ const presentIdols = (presentationId, {overlord1, overlord2, overlord3, idolOfTe
 			overlord3.giveIdol(idolOfTee);
 			break;
 	}
+}
+
+function getOverlordDebugAnswer(overlordOrderNumber = 0, overlordObject, answerToQuestion) {
+	return `Overlord ${overlordOrderNumber} (${overlordObject.getName()}): ${answerToQuestion.getPronunciation()} (${answerToQuestion.getEnglishTranslation()})`;
 }
 
 function shuffle(array) {
