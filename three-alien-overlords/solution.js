@@ -34,7 +34,7 @@ $(document).ready(function(){
 	});
 	$("#run-best-button").click(() => {
 		playOneRound(fortySixPercentStrategy, getBestSolutionMapping());
-    });
+	});
 	$("#run-many-times-button").click(() => {
 		/*
 		Here are interesting mappings that I have found:
@@ -49,7 +49,7 @@ $(document).ready(function(){
 	});
 	$("#run-best-solution-with-random-mapping-button").click(() => {
 		playManyRounds(fortySixPercentStrategy, getRandomizedMapping());
-    });
+	});
 });
 
 const getBestSolutionMapping = () => [2, 4, 1, 0, 5, 1, 4, 3];
@@ -150,16 +150,17 @@ const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () =
 	};
 
 	solutionFunction(
-    {
-      overlord1,
-      overlord2,
-      overlord3,
-      idolOfTee,
-      idolOfEff,
-      idolOfArr,
-      questionsAndAnswers,
-      printFunction,
-    }, mapping);
+	{
+		overlord1,
+		overlord2,
+		overlord3,
+		idolOfTee,
+		idolOfEff,
+		idolOfArr,
+		questionsAndAnswers,
+		printFunction,
+		mapping
+	});
 
 	printFunction(
 	"<br><p>Idols presented. What is your verdict, o' Overlords?..</p><br><br><br><br><br>"
@@ -178,7 +179,7 @@ const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () =
 };
 
 
-const getSolution2 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction}, mapping) =>{
+const getSolution2 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, questionsAndAnswers, printFunction, mapping}) =>{
 	printFunction(obviousQuestion.question);
 	
 	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
@@ -239,8 +240,8 @@ const getSolution2 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, id
 	  idolOfTee,
 	  idolOfEff,
 	  idolOfArr,
-	},
-	mapping
+	  mapping
+	}
   );
 }
 
@@ -254,7 +255,7 @@ const getFortySixPercentSolution = (
 	idolOfArr,
 	questionsAndAnswers,
 	printFunction,
-	}, mapping = [2, 4, 1, 0, 5, 1, 4, 3]) => {
+	mapping = [2, 4, 1, 0, 5, 1, 4, 3]}) => {
 	printFunction(obviousQuestion.question);
 
 	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
@@ -351,25 +352,24 @@ const getFortySixPercentSolution = (
 
 	presentIdolsBasedOnAnswers(
 	{
-	  anwerOfLord1Question1,
-	  anwerOfLord2Question2,
-	  answerOfLord3Question3,
-	  overlord1,
-	  overlord2,
-	  overlord3,
-	  idolOfTee,
-	  idolOfEff,
-	  idolOfArr,
-	},
-	mapping);
+		anwerOfLord1Question1,
+		anwerOfLord2Question2,
+		answerOfLord3Question3,
+		overlord1,
+		overlord2,
+		overlord3,
+		idolOfTee,
+		idolOfEff,
+		idolOfArr,
+		mapping
+	});
 };
 
 /**
  * 
  * @param {answes of the questions, along with the overlord objects and the three idols used to identify them} param0 
- * @param {*} mapping 
  */
-const presentIdolsBasedOnAnswers = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr}, mapping) => {
+const presentIdolsBasedOnAnswers = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, mapping}) => {
 
 	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
 	
