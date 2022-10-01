@@ -158,17 +158,14 @@ class TruthfulOverlord extends Overlord {
 			} else if (wordReference1.getMeaning() == false){
 				return this.getFalseAnswer();
 			}
-		} else if (id == answerComparisonQuestion.id) {
-			if (wordReference1.getMeaning() == true && wordReference2.getMeaning() === true) {
-				return this.getTrueAnswer();
-			}
-			return this.getFalseAnswer();
 		} else if (id == randomOverlordIdentityQuestion.id) {
 			if (overlordReference instanceof RandomOverlord) {
 				return this.getTrueAnswer();
 			}
 			return this.getFalseAnswer();
-		}
+		} else if (id == areOthersRandomOverlordQuestion.id) {
+			return this.getTrueAnswer();
+    	}
 		
 		return new Word('Hmm?', undefined); //If this answer is reached, something is wrong with my code.
 	}
@@ -180,7 +177,7 @@ class LyingOverlord extends Overlord {
 	}
 
 	getAnswer(id, references) {
-		const {wordReference1, wordReference2, overlordReference } = references || {};
+		const {wordReference1, overlordReference } = references || {};
 		
 		if (id == obviousQuestion.id){
 			return this.getFalseAnswer();
@@ -192,11 +189,6 @@ class LyingOverlord extends Overlord {
 			} else if (wordReference1.getMeaning() == false){
 				return this.getTrueAnswer();
 			}
-		} else if (id == answerComparisonQuestion.id) {
-			if (wordReference1.getMeaning() == true && wordReference2.getMeaning() === true) {
-				return this.getFalseAnswer();
-			}
-			return this.getTrueAnswer();
 		} else if (id == randomOverlordIdentityQuestion.id) {
 			if (overlordReference instanceof RandomOverlord) {
 				return this.getFalseAnswer();

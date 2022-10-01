@@ -10,27 +10,38 @@ const obviousQuestion = {
 
 const referenceQuestion = {
 	id: 1,
-	question: 'Was the answer to the last question a yes?',
-	description: "Ask an overlord information on another's answer."
+	question: 'Is this word the word for yes?',
+	description: "Ask an overlord information on a word's meaning."
 }
-
-const answerComparisonQuestion = {
-	id: 2,
-	question: 'Were the last two answers a yes?',
-	description: 'Asks the overlord to compare two answers'
-}
-
 
 const randomOverlordIdentityQuestion = {
-	id:3,
-	question: 'Is the first in line the Overlord who answers randomly?',
+	id: 3,
+	question: 'Is that the Overlord who answers randomly?',
 	description: 'Used to determine the identity of the randomly answering one.'
 }
+
+const othersAreTruthfulOverlord = {
+	id: 4,
+	question: 'Is one of the other overlords the one who tells the truth?',
+	description: 'Both Tee and Eff will answer "No" to this one.'
+}
+
+const othersAreLyingOverlord = {
+	id: 5,
+	question: 'Is one of the other overlords the one who always lies?',
+	description: 'Both Tee and Eff will answer "Yes" to this one.'
+}
+
+const isUluWordYes = {
+	id: 6,
+	question: "Is the word Ulu the word for 'Yes'?",
+	description: 'Tee will always answer Ulu to this, Eff will answer Ozo.',
+};
 
 $(document).ready(function(){
 
 	$("#run-button").click(() => {
-		playOneRound(strategy2, [2, 1, 0, 5, 5, 0, 1, 2]);
+		playOneRound(strategy2);
 	});
 	$("#run-best-button").click(() => {
 		playOneRound(fortySixPercentStrategy, getBestSolutionMapping());
@@ -87,15 +98,18 @@ function playManyRounds(strategyFunction, mapping) {
 	setTimer($("#timer"), t1 - t0);
 }
 
-function playOneRound(solutionFunction, mapping) {
+function playOneRound(strategyFunction, mapping) {
 	const t0 = performance.now();
 	const solutionLogElement = $('#solution-log');
 
 	solutionLogElement.text('');
+	solutionLogElement.html(
+		`The mapping is: ${mapping} <br>`
+	);
 	$('#analysis').text('');
 
 	//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
-	solutionFunction(mapping, (logText) => solutionLogElement.append(`${logText} <br><br>`));
+	strategyFunction(mapping, (logText) => solutionLogElement.append(`${logText} <br><br>`));
 
 	//console.log(logger.getLog());
 	console.log(logger.getAnswersToOverlordsMap());
@@ -118,6 +132,10 @@ const strategy2 = (mapping, printFunction = () => {}) => {
 
 const fortySixPercentStrategy = (mapping, printFunction = () => {}, ) => {
 	runSolutionWithFunction(getFortySixPercentSolution, mapping, printFunction);
+};
+
+const strategy3 = (mapping = null, printFunction = () => {}) => {
+  runSolutionWithFunction(getSolution3, mapping, printFunction);
 };
 
 const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () => {}) => {
@@ -284,71 +302,37 @@ const getFortySixPercentSolution = (
 	let answerOfLord2Question3;
 	let answerOfLord3Question3;
 
-	if (anwerOfLord1Question1.getPronunciation() == anwerOfLord2Question2.getPronunciation()){
+	printFunction(referenceQuestion.question);
 
-		printFunction(answerComparisonQuestion.question);
+	const references = {wordReference1: anwerOfLord2Question2};
 
-		const references = {wordReference1: anwerOfLord1Question1, wordReference2:anwerOfLord2Question2};
+	answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
+	printFunction(getOverlordDebugAnswer(1, overlord1, answerOfLord1Question3));
 
-		answerOfLord1Question3 = overlord1.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(getOverlordDebugAnswer(1, overlord1, answerOfLord1Question3));
+	answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
+	printFunction(getOverlordDebugAnswer(2, overlord2, answerOfLord2Question3));
 
-		answerOfLord2Question3 = overlord2.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(getOverlordDebugAnswer(2, overlord2, answerOfLord2Question3));
+	answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
+	printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
 
-		answerOfLord3Question3 = overlord3.getAnswer(answerComparisonQuestion.id, references)
-		printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
-		questionsAndAnswers.push({
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo: 0,
-			answer: answerOfLord1Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:1,
-			answer: answerOfLord2Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:2,
-			answer: answerOfLord3Question3.getPronunciation()
-		});
-	} else { 
-		printFunction(referenceQuestion.question);
-
-		const references = {wordReference1: anwerOfLord2Question2};
-
-		answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
-		printFunction(getOverlordDebugAnswer(1, overlord1, answerOfLord1Question3));
-
-		answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
-		printFunction(getOverlordDebugAnswer(2, overlord2, answerOfLord2Question3));
-
-		answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
-		printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
-
-		questionsAndAnswers.push({
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo: 0,
-			answer: answerOfLord1Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:1,
-			answer: answerOfLord2Question3.getPronunciation()
-		},
-		{
-			question: answerComparisonQuestion,
-			orderNumber: 2,
-			addressedTo:2,
-			answer: answerOfLord3Question3.getPronunciation()
-		});
-	}
+	questionsAndAnswers.push({
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo: 0,
+		answer: answerOfLord1Question3.getPronunciation()
+	},
+	{
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo:1,
+		answer: answerOfLord2Question3.getPronunciation()
+	},
+	{
+		question: answerComparisonQuestion,
+		orderNumber: 2,
+		addressedTo:2,
+		answer: answerOfLord3Question3.getPronunciation()
+	});
 
 	presentIdolsBasedOnAnswers(
 	{
@@ -362,6 +346,31 @@ const getFortySixPercentSolution = (
 		idolOfEff,
 		idolOfArr,
 		mapping
+	});
+};
+
+const getSolution3 = (
+	{
+	overlord1,
+	overlord2,
+	overlord3,
+	idolOfTee,
+	idolOfEff,
+	idolOfArr,
+	questionsAndAnswers,
+	printFunction}) => {
+	
+	presentIdolsBasedOnAnswers(
+	{
+		anwerOfLord1Question1,
+		anwerOfLord2Question2,
+		answerOfLord3Question3,
+		overlord1,
+		overlord2,
+		overlord3,
+		idolOfTee,
+		idolOfEff,
+		idolOfArr
 	});
 };
 

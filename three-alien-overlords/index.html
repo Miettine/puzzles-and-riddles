@@ -40,11 +40,11 @@
 <p>Here are deductions that I have made this far (roughly in the order that I have made them).</p>
 <li>The odds of guessing the overlords correctly is 1/3 * 1/2 = 1/6 or about 16.7%. There are six different ways to present the idols to the overlords.</li>
 <li>The correct solution will have a 100% success rate, regardless of the order that the overlords appear and what the meaning for the words ozo and ulu are.</li>
-
 <li>If I asked the same overlord three questions, it would help me figure who that overlord is. Then I would have a 50% chance of guessing the other two. I doubt that asking the same overlord three questions is the right way to go.</li>
 <li>The possible combinations of directing questions to overlords is as follows. The number refers to which overlord you're addressing the question to (1,1,2 means 'Ask the first overlord a question, then the first one again, then the second one'):</li>
 <ol>
-	1, 1, 2<br>
+	(1, 1, 1)<br>
+	(1, 1, 2)<br>
 	1, 2, 2<br>
 	1, 2, 1<br>
 	1, 2, 3<br>
@@ -53,13 +53,7 @@
 <li>I cannot deduce anything after asking the first question, since I don't know if the answer is a yes or a no. The only correct choice is to ask the second Overlord in line a question. It also makes no sense to ask the same question from the second overlord since the first answer gave me no information. The second question must be different from the first.</li>
 <li>Maybe I do not need to worry about which word stands for yes and no. Perhaps the solution can only be found by comparing whether the answers are the same or if they are different.</li>
 <li>Some ideas for questions:</li>
-	- Are those last two answers different?<br>
-	- Are there more yes-answers than no-answers?<br>
-	- Are there more ulu-answers than ozo-answers?<br>
 	- Does the word ulu stand for 'true'?
-	- Were the last two answers a yes?
-	- Were the last two answers the same?
-	- Were the last two answers a no?
 	- Is that the overlord who answers randomly?
 	- Is one of those two overlords the one who answers randomly?
 	- Using the operators AND or OR in a question: "Is the sky blue or does the word 'ozo' stand for 'yes'?"
@@ -93,19 +87,12 @@ So this adds up to 8 (like a binary number of three bits). If I do not know whic
 <li>My code addresses the third question to <b>each</b> overlord. This is not cheating if my code only uses one of the three answers to deduce which overlord to give which idol. This is a feature used in-development to speed up information gathering.</li>
 <li>I need to create a program that can analyze the logs of my solution programs. I must create a program that can analyze which answers map to which configuration of overlords, for example: "ozo, ozo, ulu" => Tee, Eff, Arr. If my program finds that one string of answers map to more than one configuration of overlords, then my questions are faulty and I need to improve them.</li>
 <li>It turns out that console.log in a web browser is quite slow. Do not call it too many times successively.</li>
-<li>I attempted to make an excel sheet designing questions and laying out the answers. It did not go very well. It seems that my questions need rethinking.</li>
-<li>"Is that the overlord who answers randomly?" - is a complex question. There are 3 different ways to ask it: I can ask whether the overlord I am asking it from is the randomly answering overlord or if either of the other two overlords is the randomly answering one. I am not certain if this works as the question's strenght or </li>
 <li>Asking for any overlord's identity could be an effective question if I could reliably direct it to Tee, the truthful overlord. Perhaps if I could use the first two questions to rule out which of the overlords is Tee, then ask the third question from them.</li>
 <li>If I could determine which of the overlords is Eff, then I can also use the question "Is that the overlord who answers randomly?". Eff's answer is the opposite of Tee's answer but it still gives me the same information.</li>
 <li>Asking for the random overlord's identity is only effective if I know which answer means "yes" and which means "no".</li>
 <li>Could I use the first question to determine the meaning for the words ozo and ulu, then use the second question to determine which overlord is not Arr (not Arr = is Tee or Eff). This plan is probably easier said than done because I could unwillingly direct one of the first two questions to Arr whose answers will only throw me off.</li>
 <li>I bet I can only determine the likelyhoods of the overlords to a certain probability, then I can ask the third question from Tee or Eff and reliably deduce the order of the overlords from the answers.</li>
-<li>With the first two questions I could determine which of the overlords are Arr. I could probably use the third question to determine the following facts:</li>
-<ol>
-	<li>Which of the two remaining overlords is Tee and which is Eff</li>
-	<li>What are the meanings of the words ozo and ulu (deduce from all three answers)</li>
-</ol>
-<li>With the first two questions I could determine which of the overlords are Arr. I could probably use the third question to determine the following facts:</li>
+
 
 <br><br>
 <button id="run-button">Run</button>
