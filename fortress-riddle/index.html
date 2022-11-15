@@ -23,7 +23,6 @@
   const runSolution = (solutionTextHtmlElement) => {
     solutionTextHtmlElement.append("Starting program..<br><br>");
     const t0 = performance.now();
-    console.log("yes?");
     for (let wallLength = 1000; wallLength >= 1; wallLength--) {
       const wallSegmentValidity = asessWallSegmentValidity(wallLength);
       if (wallSegmentValidity.isValid) {
@@ -68,9 +67,7 @@
     }
 
     const t1 = performance.now();
-    solutionTextHtmlElement.append(
-      "See thorough logging in the browser console."
-    );
+
     solutionTextHtmlElement.append("<br>");
     solutionTextHtmlElement.append(
       `The program took ${t1 - t0} milliseconds to run.<br>`
@@ -80,7 +77,6 @@
   };
 
   const asessWallSegmentValidity = (wallLength) => {
-    console.log();
 
     const moduloTwenty = wallLength % 20;
     if (moduloTwenty == 0) {
@@ -113,16 +109,6 @@
         const remainingWall =
           remainingWallWithoutTwenties - numberOfNineSegments * 9;
 
-        console.log(
-          "wallLength " +
-            wallLength +
-            "; numberOfTwentySegments " +
-            numberOfTwentySegments +
-            "; numberOfNineSegments " +
-            numberOfNineSegments +
-            "; remainingWall " +
-            remainingWall
-        );
         if (remainingWall % 6 == 0) {
           return getInvalidWallSegmentResultObject(
             numberOfTwentySegments,
@@ -140,8 +126,6 @@
     ) {
       const remainingWall = wallLength - numberOfNineSegments * 9;
 
-      //console.log("wallLength " + wallLength + "; numberOfNineSegments " + numberOfNineSegments
-      //+ "; remainingWall "+ remainingWall);
       if (remainingWall % 6 == 0) {
         return getInvalidWallSegmentResultObject(
           0,
