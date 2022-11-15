@@ -122,6 +122,10 @@ class Overlord {
 		return this.falseWord;
 	}
 
+	getUluWord(){
+		return this.trueWord.getPronunciation() == "Ulu" ? this.trueWord : this.falseWord;
+	}
+
 	getAnswer(id, {wordReference1, wordReference2}) {
 		throw new Exception('Not supported');
 
@@ -163,9 +167,14 @@ class TruthfulOverlord extends Overlord {
 				return this.getTrueAnswer();
 			}
 			return this.getFalseAnswer();
-		} else if (id == areOthersRandomOverlordQuestion.id) {
+		} else if (id == isUluWordYes.id) {
+			if (this.getUluWord().getMeaning() == true){
+				return this.getTrueAnswer();
+			}
+			return this.getFalseAnswer();
+		} else if (id == othersAreLyingOverlord.id) {
 			return this.getTrueAnswer();
-    	}
+		}
 		
 		return new Word('Hmm?', undefined); //If this answer is reached, something is wrong with my code.
 	}
@@ -193,6 +202,13 @@ class LyingOverlord extends Overlord {
 			if (overlordReference instanceof RandomOverlord) {
 				return this.getFalseAnswer();
 			}
+			return this.getTrueAnswer();
+		} else if (id == isUluWordYes.id) {
+			if (this.getUluWord().getMeaning() == true){
+				return this.getFalseAnswer();
+			}
+			return this.getTrueAnswer();
+		} else if (id == othersAreLyingOverlord.id) {
 			return this.getTrueAnswer();
 		}
 		return new Word('Hmm?', undefined);

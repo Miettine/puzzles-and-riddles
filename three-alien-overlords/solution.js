@@ -41,52 +41,32 @@ const isUluWordYes = {
 $(document).ready(function(){
 
 	$("#run-button").click(() => {
-		playOneRound(strategy2);
-	});
-	$("#run-best-button").click(() => {
-		playOneRound(fortySixPercentStrategy, getBestSolutionMapping());
-	});
-	$("#run-many-times-button").click(() => {
-		/*
-		Here are interesting mappings that I have found:
-		[1,3,4,2,4,1,5,0] : 0% winrate. Always loses. Why and how it can always lose is worthy of investigating
-		[2, 1, 0, 5, 5, 0, 1, 2] default mapping that I have determined. About 33% winrate
-		*/
-		playManyRounds(strategy2, getRandomizedMapping());
+		playOneRound(strategy3);
 	});
 
-	$("#run-best-solution-button").click(() => {
-		playManyRounds(fortySixPercentStrategy, getBestSolutionMapping());
-	});
-	$("#run-best-solution-with-random-mapping-button").click(() => {
-		playManyRounds(fortySixPercentStrategy, getRandomizedMapping());
+	$("#run-many-times-button").click(() => {
+		playManyRounds(strategy3);
 	});
 });
-
-const getBestSolutionMapping = () => [2, 4, 1, 0, 5, 1, 4, 3];
 
 const setTimer = (timerElement, time) => {
 	timerElement.html(`The program took ${time} milliseconds to run.<br>`);
 }
 
-function playManyRounds(strategyFunction, mapping) {
+function playManyRounds(strategyFunction) {
 	logger.clear();
 
 	const t0 = performance.now();
 
-	console.log("The mapping is: " + mapping);
-
 	for (let i = 0; i < 10000; i++) {
-		strategyFunction(mapping);
+		strategyFunction();
 	}
 
 	const numberOfGames = logger.getNumberOfGames();
 	const numberOfWonGames = logger.getNumberOfWonGames();
 
 	$("#solution-log").html(
-		`The mapping is: ${mapping} <br>
-			<br>
-			games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${(numberOfWonGames / numberOfGames) * 100}%`
+		`games: ${numberOfGames}, won: ${numberOfWonGames}, winrate: ${(numberOfWonGames / numberOfGames) * 100}%`
 	);
 
 	const map = logger.getAnswersToOverlordsMap();
@@ -98,18 +78,16 @@ function playManyRounds(strategyFunction, mapping) {
 	setTimer($("#timer"), t1 - t0);
 }
 
-function playOneRound(strategyFunction, mapping) {
+function playOneRound(strategyFunction) {
 	const t0 = performance.now();
 	const solutionLogElement = $('#solution-log');
 
 	solutionLogElement.text('');
-	solutionLogElement.html(
-		`The mapping is: ${mapping} <br>`
-	);
+
 	$('#analysis').text('');
 
 	//$('#note-text').html('<b>Scroll all the way down to view the whole solution.</b>');
-	strategyFunction(mapping, (logText) => solutionLogElement.append(`${logText} <br><br>`));
+	strategyFunction((logText) => solutionLogElement.append(`${logText} <br><br>`));
 
 	//console.log(logger.getLog());
 	console.log(logger.getAnswersToOverlordsMap());
@@ -126,19 +104,11 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const strategy2 = (mapping, printFunction = () => {}) => {
-  runSolutionWithFunction(getSolution2, mapping, printFunction);
+const strategy3 = (printFunction = () => {}) => {
+  runSolutionWithFunction(getSolution3, printFunction);
 };
 
-const fortySixPercentStrategy = (mapping, printFunction = () => {}, ) => {
-	runSolutionWithFunction(getFortySixPercentSolution, mapping, printFunction);
-};
-
-const strategy3 = (mapping = null, printFunction = () => {}) => {
-  runSolutionWithFunction(getSolution3, mapping, printFunction);
-};
-
-const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () => {}) => {
+const runSolutionWithFunction = (solutionFunction, printFunction = () => {}) => {
 	printFunction("Starting program..");
 
 	const wordPronunciations = shuffle(["Ozo", "Ulu"]);
@@ -176,8 +146,7 @@ const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () =
 		idolOfEff,
 		idolOfArr,
 		questionsAndAnswers,
-		printFunction,
-		mapping
+		printFunction
 	});
 
 	printFunction(
@@ -187,6 +156,8 @@ const runSolutionWithFunction = (solutionFunction, mapping, printFunction = () =
 	printFunction(overlord1.getOpinion());
 	printFunction(overlord2.getOpinion());
 	printFunction(overlord3.getOpinion());
+
+	printFunction(`The word Ulu means ${wordForTrue.getPronunciation() == "Ulu" ? true : false}, the word Ozo means  ${wordForTrue.getPronunciation() == "Ozo" ? true : false}`);
 
 	gameLog.victory =
 	overlord1.isPleased() && overlord2.isPleased() && overlord3.isPleased();
@@ -249,93 +220,6 @@ const getSolution2 = ({overlord1, overlord2, overlord3, idolOfTee, idolOfEff, id
 	
 	presentIdolsBasedOnAnswers(
 	{
-	  anwerOfLord1Question1,
-	  anwerOfLord2Question2,
-	  answerOfLord3Question3,
-	  overlord1,
-	  overlord2,
-	  overlord3,
-	  idolOfTee,
-	  idolOfEff,
-	  idolOfArr,
-	  mapping
-	}
-  );
-}
-
-const getFortySixPercentSolution = (
-	{
-	overlord1,
-	overlord2,
-	overlord3,
-	idolOfTee,
-	idolOfEff,
-	idolOfArr,
-	questionsAndAnswers,
-	printFunction,
-	mapping = [2, 4, 1, 0, 5, 1, 4, 3]}) => {
-	printFunction(obviousQuestion.question);
-
-	const anwerOfLord1Question1 = overlord1.getAnswer(obviousQuestion.id, null);
-	printFunction(getOverlordDebugAnswer(1, overlord1, anwerOfLord1Question1));
-
-	questionsAndAnswers.push({
-	question: obviousQuestion,
-	orderNumber: 0,
-	addressedTo: 0,
-	answer: anwerOfLord1Question1.getPronunciation(),
-	});
-
-	printFunction(referenceQuestion.question);
-	const anwerOfLord2Question2 = overlord2.getAnswer(referenceQuestion.id, {
-		wordReference1: anwerOfLord1Question1,
-	});
-	printFunction(getOverlordDebugAnswer(2, overlord2, anwerOfLord2Question2));
-
-	questionsAndAnswers.push({
-		question: referenceQuestion,
-		orderNumber: 1,
-		addressedTo: 1,
-		answer: anwerOfLord2Question2.getPronunciation(),
-	});
-	let answerOfLord1Question3;
-	let answerOfLord2Question3;
-	let answerOfLord3Question3;
-
-	printFunction(referenceQuestion.question);
-
-	const references = {wordReference1: anwerOfLord2Question2};
-
-	answerOfLord1Question3 = overlord1.getAnswer(referenceQuestion.id, references)
-	printFunction(getOverlordDebugAnswer(1, overlord1, answerOfLord1Question3));
-
-	answerOfLord2Question3 = overlord2.getAnswer(referenceQuestion.id, references)
-	printFunction(getOverlordDebugAnswer(2, overlord2, answerOfLord2Question3));
-
-	answerOfLord3Question3 = overlord3.getAnswer(referenceQuestion.id, references)
-	printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
-
-	questionsAndAnswers.push({
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo: 0,
-		answer: answerOfLord1Question3.getPronunciation()
-	},
-	{
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo:1,
-		answer: answerOfLord2Question3.getPronunciation()
-	},
-	{
-		question: answerComparisonQuestion,
-		orderNumber: 2,
-		addressedTo:2,
-		answer: answerOfLord3Question3.getPronunciation()
-	});
-
-	presentIdolsBasedOnAnswers(
-	{
 		anwerOfLord1Question1,
 		anwerOfLord2Question2,
 		answerOfLord3Question3,
@@ -346,8 +230,9 @@ const getFortySixPercentSolution = (
 		idolOfEff,
 		idolOfArr,
 		mapping
-	});
-};
+	}
+  );
+}
 
 const getSolution3 = (
 	{
@@ -359,44 +244,69 @@ const getSolution3 = (
 	idolOfArr,
 	questionsAndAnswers,
 	printFunction}) => {
-	
-	presentIdolsBasedOnAnswers(
-	{
-		anwerOfLord1Question1,
-		anwerOfLord2Question2,
-		answerOfLord3Question3,
-		overlord1,
-		overlord2,
-		overlord3,
-		idolOfTee,
-		idolOfEff,
-		idolOfArr
-	});
-};
 
-/**
- * 
- * @param {answes of the questions, along with the overlord objects and the three idols used to identify them} param0 
- */
-const presentIdolsBasedOnAnswers = ({anwerOfLord1Question1, anwerOfLord2Question2, answerOfLord3Question3, overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr, mapping}) => {
+	printFunction(isUluWordYes.question);
+	const anwerOfLord1Question1 = overlord1.getAnswer(isUluWordYes.id);
+	printFunction(getOverlordDebugAnswer(1, overlord1, anwerOfLord1Question1));
+
+	questionsAndAnswers.push({
+		question: isUluWordYes,
+		orderNumber: 0,
+		addressedTo: 0,
+		answer: anwerOfLord1Question1.getPronunciation(),
+	});
+
+	printFunction(othersAreLyingOverlord.question);
+	const anwerOfLord2Question2 = overlord2.getAnswer(othersAreLyingOverlord.id);
+	printFunction(getOverlordDebugAnswer(2, overlord2, anwerOfLord2Question2));
+
+	questionsAndAnswers.push({
+		question: othersAreLyingOverlord,
+		orderNumber: 1,
+		addressedTo: 1,
+		answer: anwerOfLord2Question2.getPronunciation(),
+	});
+
+	let answerOfLord3Question3;
+
+	printFunction(isUluWordYes.question);
+
+	answerOfLord3Question3 = overlord3.getAnswer(isUluWordYes.id);
+	printFunction(getOverlordDebugAnswer(3, overlord3, answerOfLord3Question3));
+
+	questionsAndAnswers.push(
+	{
+		question: isUluWordYes,
+		orderNumber: 2,
+		addressedTo:2,
+		answer: answerOfLord3Question3.getPronunciation()
+	});
 
 	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
 	
 		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
 			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				//Ozo,Ozo,Ozo
-				presentIdols(mapping[0], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
 			} else {
 				//Ozo,Ozo,Ulu
-				presentIdols(mapping[1], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
 			}
 		} else {
 			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				//Ozo,Ulu,Ozo
-				presentIdols(mapping[2], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
 			} else {
 				//Ozo,Ulu,Ulu
-				presentIdols(mapping[3], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
 			}
 		}
 		
@@ -404,38 +314,84 @@ const presentIdolsBasedOnAnswers = ({anwerOfLord1Question1, anwerOfLord2Question
 		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
 			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				//Ulu,Ozo,Ozo
-				presentIdols(mapping[4], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
 			} else {
 				//Ulu,Ozo,Ulu
-				presentIdols(mapping[5], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
 			}
 		} else {
 			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
 				//Ulu,Ulu,Ozo
-				presentIdols(mapping[6], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
 			} else {
 				//Ulu,Ulu,Ulu
-				presentIdols(mapping[7], {overlord1, overlord2, overlord3, idolOfTee, idolOfEff, idolOfArr});
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
+			}
+		}	
+	}	if (anwerOfLord1Question1.getPronunciation() == 'Ozo'){
+	
+		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				//Ozo,Ozo,Ozo
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
+			} else {
+				//Ozo,Ozo,Ulu
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
+			}
+		} else {
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				//Ozo,Ulu,Ozo
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
+			} else {
+				//Ozo,Ulu,Ulu
+				overlord1.giveIdol(idolOfEff);
+				overlord2.giveIdol(idolOfTee);
+				overlord3.giveIdol(idolOfArr);
+			}
+		}
+		
+	} else {
+		if (anwerOfLord2Question2.getPronunciation()=='Ozo'){
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				//Ulu,Ozo,Ozo
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
+			} else {
+				//Ulu,Ozo,Ulu
+				overlord1.giveIdol(idolOfTee);
+                overlord2.giveIdol(idolOfEff);
+                overlord3.giveIdol(idolOfArr);
+			}
+		} else {
+			if (answerOfLord3Question3.getPronunciation() =='Ozo'){
+				//Ulu,Ulu,Ozo
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
+			} else {
+				//Ulu,Ulu,Ulu
+				overlord1.giveIdol(idolOfTee);
+				overlord2.giveIdol(idolOfEff);
+				overlord3.giveIdol(idolOfArr);
 			}
 		}	
 	}
-}
-
-/**
- * Returns an array that is 8 elements long containing numbers between 0 to 5 .
- * Used to map answers into an order of the overlords. 
- * It is 8 elements long because there are 8 possible combinations of answers that the overlords could say ("Ozo,Ozo,Ozo", "Ozo,Ozo,Ulu" etc.).
- * Numbers from 0 to 5 must appear once in the mapping list (there is a total of 6 different possible orders for the overlords).
- * I don't know yet what the remaining two numbers are so I am selecting them randomly.
- * @returns 
- */
-const getRandomizedMapping = () => {
-	let array = [];
-	array.push(0,1,2,3,4,5, getRandomInt(6), getRandomInt(6));
-
-	shuffle(array);
-	return array;
-}
+};
 
 /**
 0 Tee, Eff, Arr
@@ -481,24 +437,29 @@ const presentIdols = (presentationId, {overlord1, overlord2, overlord3, idolOfTe
 }
 
 function getOverlordDebugAnswer(overlordOrderNumber = 0, overlordObject, answerToQuestion) {
-	return `Overlord ${overlordOrderNumber} (${overlordObject.getName()}): ${answerToQuestion.getPronunciation()} (${answerToQuestion.getEnglishTranslation()})`;
+
+	const showSpoilers = false;
+
+	return showSpoilers
+	? `Overlord ${overlordOrderNumber} (${overlordObject.getName()}): ${answerToQuestion.getPronunciation()} (${answerToQuestion.getEnglishTranslation()})`
+	: `Overlord ${overlordOrderNumber}: ${answerToQuestion.getPronunciation()}`;
 }
 
 function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+	var currentIndex = array.length, temporaryValue, randomIndex;
 
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+	// While there remain elements to shuffle...
+	while (0 !== currentIndex) {
 
-	// Pick a remaining element...
-	randomIndex = Math.floor(Math.random() * currentIndex);
-	currentIndex -= 1;
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
 
-	// And swap it with the current element.
-	temporaryValue = array[currentIndex];
-	array[currentIndex] = array[randomIndex];
-	array[randomIndex] = temporaryValue;
-  }
+		// And swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
 
-  return array;
+	return array;
 }
